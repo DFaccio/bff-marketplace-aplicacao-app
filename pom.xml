@@ -12,7 +12,7 @@
 	<artifactId>bff-marketplace-aplicacao-app</artifactId>
 	<version>v1.0.0-SNAPSHOT</version>
 	<name>bff-marketplace-aplicacao-app</name>
-	<description>MVP de um marketplace de compra coletiva de cafe</description>
+	<description>Sistema para um marketplace de compra coletiva de cafe</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.0-M2</spring-cloud.version>

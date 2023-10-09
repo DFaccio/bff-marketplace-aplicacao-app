@@ -1,9 +1,18 @@
 package br.com.dducl.bffmarketplaceaplicacaoapp.Service;
 
-import br.com.dducl.bffmarketplaceaplicacaoapp.DTO.FormularioDeCompraListDTO;
+import br.com.dducl.bffmarketplaceaplicacaoapp.DTO.*;
+import br.com.dducl.bffmarketplaceaplicacaoapp.Service.*;
 
 public interface FormularioDeCompraService {
     
-    public List<FormularioDeCompraDTO> retornaProdutos;
+    private List<FormularioDeCompraDTO> consultarProdutos;
+
+    private FormularioDeCompraDTO incluirProduto;
+
+    @Autowired
+    private FormularioDeCompraService formularioService;
+
+
+
 
 }

@@ -1,5 +1,7 @@
-package br.com.dducl.bffmarketplaceaplicacaoapp.serviceImpl;
+package br.com.dducl.bffmarketplaceaplicacaoapp.ServiceImpl;
 
-public class FormularioDeCompraServiceImpl {
+public class FormularioDeCompraServiceImpl implements FormularioDeCompraService {
+
+    
     
 }

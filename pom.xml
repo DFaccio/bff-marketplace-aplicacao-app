@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.dducl</groupId>
 	<artifactId>bff-marketplace-aplicacao-app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>v1.0.0-SNAPSHOT</version>
 	<name>bff-marketplace-aplicacao-app</name>
 	<description>MVP de um marketplace de compra coletiva de cafe</description>
 	<properties>

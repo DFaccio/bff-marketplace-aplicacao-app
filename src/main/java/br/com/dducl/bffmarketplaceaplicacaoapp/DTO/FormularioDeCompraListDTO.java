@@ -1,6 +1,6 @@
 package br.com.dducl.bffmarketplaceaplicacaoapp.DTO;
 
-import br.com.dducl.bffmarketplaceaplicacaoapp.DTO.FormularioDeCompraDTO;
+import java.util.List;
 
 public class FormularioDeCompraListDTO {
     

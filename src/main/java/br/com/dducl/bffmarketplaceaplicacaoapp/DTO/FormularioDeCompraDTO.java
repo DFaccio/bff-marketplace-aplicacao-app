@@ -1,13 +1,13 @@
-package br.com.dducl.bffmarketplaceaplicacaoapp.DTO.FormularioDeCompraDTO;
+package br.com.dducl.bffmarketplaceaplicacaoapp.DTO;
 
 public class FormularioDeCompraDTO {
     
-    private final int idProduto;
-    private final String descricaoProduto;
-    private final String conteudoProduto;
-    private final int quantidadeProduto;
-    private final double valorProduto;
-    private final String fornecedor;
+    private int idProduto;
+    private String descricaoProduto;
+    private String conteudoProduto;
+    private int quantidadeProduto;
+    private double valorProduto;
+    private String fornecedor;
 
     public FormularioDeCompraDTO(int idProduto, String descricaoProduto, String conteudoProduto, int quantidadeProduto, double valorProduto, String fornecedor){
         this.idProduto = idProduto;

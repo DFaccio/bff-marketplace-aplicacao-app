@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 public class FormularioDeCompraController extends Throwable {
     
-    private final String LISTAR_PRODUTOS = "/listarProdutos";
+    private static final String LISTAR_PRODUTOS = "/listarProdutos";
 
     @Autowired
     private FormularioDeCompraService formularioService;

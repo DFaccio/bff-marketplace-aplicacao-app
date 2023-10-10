@@ -9,15 +9,6 @@ public class FormularioDeCompraDTO {
     private double valorProduto;
     private String fornecedor;
 
-    public FormularioDeCompraDTO(int idProduto, String descricaoProduto, String conteudoProduto, int quantidadeProduto, double valorProduto, String fornecedor){
-        this.idProduto = idProduto;
-        this.descricaoProduto = descricaoProduto;
-        this.conteudoProduto = conteudoProduto;
-        this.quantidadeProduto = quantidadeProduto;
-        this.valorProduto = valorProduto;
-        this.fornecedor = fornecedor;
-    }
-
     public int getIdProduto(){
         return idProduto;
     }

@@ -1,4 +1,4 @@
-package br.com.dducl.bffmarketplaceaplicacaoapp.util;
+package br.com.dducl.bffmarketplaceapp.util.enums;
 
 public enum Perfil {
 

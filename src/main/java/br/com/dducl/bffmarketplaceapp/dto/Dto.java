@@ -1,4 +1,4 @@
-package br.com.dducl.bffmarketplaceaplicacaoapp.dto;
+package br.com.dducl.bffmarketplaceapp.dto;
 
 import lombok.Getter;
 import lombok.Setter;

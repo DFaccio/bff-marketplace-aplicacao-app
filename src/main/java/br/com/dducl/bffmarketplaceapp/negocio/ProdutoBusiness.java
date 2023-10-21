@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -41,9 +42,33 @@ public class ProdutoBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public ProdutoDto findProdutoById(int descricao) throws ValidacoesException {
+    public ProdutoDto findProdutoById(int descricao) {
         var produto = (repository.getReferenceById(descricao));
         return conversor.converte(produto);
     }
 
+    public void update(ProdutoDto dto) throws ValidacoesException {
+        var produto = (repository.getReferenceById(dto.getId()));
+
+        if (produto.equals(null)) {
+            throw new ValidacoesException("Produto informado para atualiza\u00E7\u00E3o n\u00E3o foi encontrado!");
+        }
+
+        Produto atualizar = produto;
+        if (dto.getConteudo() != null) {
+            atualizar.setConteudo(dto.getConteudo());
+        }
+        if (dto.getDescricao() != null) {
+            atualizar.setDescricao(dto.getDescricao());
+        }
+        if (dto.getQuantidade() != 0) {
+            atualizar.setQuantidade(dto.getQuantidade());
+        }
+        if (dto.getValor() != null) {
+            atualizar.setValor(dto.getValor());
+        }
+        atualizar.setDisponivel(dto.isDisponivel());
+
+        repository.save(atualizar);
+    }
 }

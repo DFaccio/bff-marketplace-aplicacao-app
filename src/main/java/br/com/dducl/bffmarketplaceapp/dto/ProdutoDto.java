@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 @Setter
 public class ProdutoDto extends Dto{
 
+    private Integer id;
+
     private String conteudo;
 
     private String descricao;

@@ -1,5 +1,6 @@
 package br.com.dducl.bffmarketplaceapp.controller;
 
+import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
 import br.com.dducl.bffmarketplaceapp.negocio.ProdutoBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
@@ -33,6 +34,13 @@ public class ProdutoController {
     @PostMapping("/new")
     public ResponseEntity<Void> insert(@RequestBody ProdutoDto produto) throws ValidacoesException {
         business.insert(produto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Void> update(@RequestBody ProdutoDto produto) throws ValidacoesException {
+        business.update(produto);
 
         return ResponseEntity.noContent().build();
     }

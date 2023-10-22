@@ -13,8 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -67,8 +65,15 @@ public class ProdutoBusiness {
         if (dto.getValor() != null) {
             atualizar.setValor(dto.getValor());
         }
-        atualizar.setDisponivel(dto.isDisponivel());
 
+        repository.save(atualizar);
+    }
+
+    public void delete(ProdutoDto dto){
+        var produto = (repository.getReferenceById(dto.getId()));
+        Produto atualizar = produto;
+
+        atualizar.setDisponivel(false);
         repository.save(atualizar);
     }
 }

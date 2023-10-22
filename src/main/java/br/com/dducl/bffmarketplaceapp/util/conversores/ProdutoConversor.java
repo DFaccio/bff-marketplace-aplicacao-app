@@ -11,6 +11,7 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
     public ProdutoDto converte(Produto entidade){
         ProdutoDto dto = new ProdutoDto();
 
+        dto.setId(entidade.getId());
         dto.setDescricao(entidade.getDescricao());
         dto.setConteudo(entidade.getConteudo());
         dto.setQuantidade(entidade.getQuantidade());
@@ -26,6 +27,7 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
     public Produto converte(ProdutoDto dto) {
         Produto produto = new Produto();
 
+        produto.setId(dto.getId());
         produto.setDescricao(dto.getDescricao());
         produto.setConteudo(dto.getConteudo());
         produto.setQuantidade(dto.getQuantidade());

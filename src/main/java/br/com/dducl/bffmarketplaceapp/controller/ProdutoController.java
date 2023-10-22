@@ -1,6 +1,5 @@
 package br.com.dducl.bffmarketplaceapp.controller;
 
-import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
 import br.com.dducl.bffmarketplaceapp.negocio.ProdutoBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
@@ -27,7 +26,7 @@ public class ProdutoController {
     }
 
     @GetMapping(value = "/id/{id}")
-    public ResponseEntity<ProdutoDto> findProdutoById(@PathVariable int id) throws ValidacoesException {
+    public ResponseEntity<ProdutoDto> findProdutoById(@PathVariable int id){
         return ResponseEntity.ok(business.findProdutoById(id));
     }
 
@@ -45,4 +44,10 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable int id){
+        business.delete(business.findProdutoById(id));
+
+        return ResponseEntity.noContent().build();
+    }
 }

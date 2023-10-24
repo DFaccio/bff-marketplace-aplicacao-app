@@ -20,7 +20,7 @@ Membros do grupo de desenvolvimento
  - João Baptista
 
 ### Itens a instalar
-O projeto utiliza Java 17 e banco de dados PostgreSQL. Desta forma, será necessário ter os dois instalados.
+O projeto utiliza Java 17 e banco de dados PostgreSQL (>=14). Desta forma, será necessário ter os dois instalados.
 
 ### Configurações
 Realize as seguintes configurações no application.properties:

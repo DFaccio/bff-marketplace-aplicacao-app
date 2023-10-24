@@ -4,7 +4,8 @@ import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
 import br.com.dducl.bffmarketplaceapp.negocio.FornecedorBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,19 +27,19 @@ public class FornecedorController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<FornecedorDto> findById(@PathVariable Integer id) throws ValidacoesException {
+    public ResponseEntity<FornecedorDto> findById(@PathVariable Integer id) throws NotFoundException {
         return ResponseEntity.ok(business.findById(id));
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> insert(@RequestBody FornecedorDto fornecedor) throws ValidacoesException {
+    public ResponseEntity<Void> insert(@RequestBody FornecedorDto fornecedor) throws ValidationsException {
         business.insert(fornecedor);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/identificador/{identificador}")
-    public ResponseEntity<FornecedorDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
+    public ResponseEntity<FornecedorDto> findByIdentificador(@PathVariable String identificador) throws NotFoundException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }
 }

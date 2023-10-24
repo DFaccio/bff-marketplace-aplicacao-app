@@ -1,5 +1,6 @@
 package br.com.dducl.bffmarketplaceapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"id"})
 public class PessoaDto extends Dto {
 
     private String nome;
@@ -21,5 +23,7 @@ public class PessoaDto extends Dto {
 
     private boolean ativo;
 
-    private List<String> chavesAtivas;
+    private EnderecoDto endereco;
+
+    private List<ChavesPixDto> chavesPix;
 }

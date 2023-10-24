@@ -17,15 +17,10 @@ public class Usuario implements Serializable {
     private static final long serialVersionUID = 1;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Integer id;
-
-    @Column
     private String nome;
 
-    @ManyToMany
-    @JoinTable(name = "usuario_senha", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "senha_id"))
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(joinColumns = @JoinColumn(name = "usuario_id"))
     private List<SenhaUsuario> senha;
 
     @Enumerated(EnumType.STRING)

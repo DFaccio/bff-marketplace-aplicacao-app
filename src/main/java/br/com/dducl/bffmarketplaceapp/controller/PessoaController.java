@@ -4,9 +4,10 @@ import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.negocio.PessoaBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,21 +28,21 @@ public class PessoaController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        pessoa = business.insert(pessoa);
+    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidationsException {
+        PessoaDto dto = business.insert(pessoa);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoa);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        pessoa = business.update(pessoa);
+    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidationsException {
+        PessoaDto dto = business.update(pessoa);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping(value = "/identificador/{identificador}")
-    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
+    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws NotFoundException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }
 }

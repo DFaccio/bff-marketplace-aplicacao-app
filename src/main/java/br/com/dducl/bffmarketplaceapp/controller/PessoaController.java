@@ -34,10 +34,10 @@ public class PessoaController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        business.update(pessoa);
+    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+        pessoa = business.update(pessoa);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
     }
 
     @GetMapping(value = "/identificador/{identificador}")

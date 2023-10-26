@@ -79,7 +79,7 @@ public class PessoaBusiness {
         return conversor.converte(pessoa.get());
     }
 
-    public void update(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto update(PessoaDto dto) throws ValidacoesException {
         Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
 
         if (pessoa.isEmpty()) {
@@ -93,6 +93,6 @@ public class PessoaBusiness {
         atualizar.setAtivo(dto.isAtivo());
         atualizar.setNome(dto.getNome());
 
-        repository.save(atualizar);
+        return conversor.converte(repository.save(atualizar));
     }
 }

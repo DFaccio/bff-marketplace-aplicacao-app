@@ -17,7 +17,6 @@ Membros do grupo de desenvolvimento
  - Danilo Faccio
  - Erick Ribeiro
  - [Isabela França](https://github.com/fysabelah)
- - João Baptista
 
 ### Itens a instalar
 O projeto utiliza Java 17 e banco de dados PostgreSQL. Desta forma, será necessário ter os dois instalados.

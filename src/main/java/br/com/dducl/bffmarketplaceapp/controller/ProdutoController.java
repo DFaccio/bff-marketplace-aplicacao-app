@@ -6,6 +6,7 @@ import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
 import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,23 +32,23 @@ public class ProdutoController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> insert(@RequestBody ProdutoDto produto) throws ValidacoesException {
-        business.insert(produto);
+    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws ValidacoesException {
+        produto = business.insert(produto);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody ProdutoDto produto) throws ValidacoesException {
-        business.update(produto);
+    public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidacoesException {
+        produto = business.update(produto);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
-        business.delete(business.findProdutoById(id));
+    public ResponseEntity<ProdutoDto> delete(@PathVariable int id){
+        ProdutoDto produto = business.delete(business.findProdutoById(id));
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
     }
 }

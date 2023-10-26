@@ -24,12 +24,12 @@ public class ProdutoBusiness {
     @Resource
     private ProdutoRepository repository;
 
-    public void insert(ProdutoDto dto) throws ValidacoesException {
+    public ProdutoDto insert(ProdutoDto dto) throws ValidacoesException {
         Produto produto = conversor.converte(dto);
 
         produto.setDataCriacao(LocalDateTime.now());
 
-        repository.save(produto);
+        return conversor.converte(repository.save(produto));
     }
 
     public ResultadoPaginado<ProdutoDto> findAll(Pagination page) {
@@ -45,8 +45,8 @@ public class ProdutoBusiness {
         return conversor.converte(produto);
     }
 
-    public void update(ProdutoDto dto) throws ValidacoesException {
-        var produto = (repository.getReferenceById(dto.getId()));
+    public ProdutoDto update(ProdutoDto dto) throws ValidacoesException {
+        var produto = repository.getReferenceById(dto.getId());
 
         if (produto.equals(null)) {
             throw new ValidacoesException("Produto informado para atualiza\u00E7\u00E3o n\u00E3o foi encontrado!");
@@ -65,15 +65,17 @@ public class ProdutoBusiness {
         if (dto.getValor() != null) {
             atualizar.setValor(dto.getValor());
         }
+        atualizar.setDisponivel(dto.isDisponivel());
 
-        repository.save(atualizar);
+        return conversor.converte(repository.save(atualizar));
+
     }
 
-    public void delete(ProdutoDto dto){
+    public ProdutoDto delete(ProdutoDto dto){
         var produto = (repository.getReferenceById(dto.getId()));
         Produto atualizar = produto;
 
         atualizar.setDisponivel(false);
-        repository.save(atualizar);
+        return conversor.converte(repository.save(atualizar));
     }
 }

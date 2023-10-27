@@ -8,18 +8,21 @@ O projeto consiste em fornecer um template web para a criação de grupos de com
 
 O projeto encontra-se em andamento. Neste primeiro momento, estaremos entregando MVP referente aos cadastros das entidades.
 
-Para um maior entendimento sobre o projeto, sinta-se livre para acessar nossa documentação [aqui](https://www.notion.so/8d23441e4ddc4bb88ab78d7b952595e7?v=ea155403c7cd4b568b812d0d50aee463&pvs=4).
+Para um maior entendimento sobre o projeto, sinta-se livre para acessar nossa documentação usando o Notion [aqui](https://www.notion.so/8d23441e4ddc4bb88ab78d7b952595e7?v=ea155403c7cd4b568b812d0d50aee463&pvs=4).
 
 O projeto foi idealizado e está sendo construído ao longo do curso de Arquitetura e Desenvolvimento Java da FIAP.
 
 Membros do grupo de desenvolvimento
- - Aydan Amorim
- - Danilo Faccio
- - Erick Ribeiro
+ - [Aydan Amorim](https://github.com/AydanAmorim/)
+ - [Danilo Faccio](https://github.com/DFaccio/)
+ - [Erick Ribeiro](https://github.com/erickmatheusribeiro)
  - [Isabela França](https://github.com/fysabelah)
 
 ### Itens a instalar
-O projeto utiliza Java 17 e banco de dados PostgreSQL. Desta forma, será necessário ter os dois instalados.
+O projeto utiliza as seguintes tecnologias e frameworks, Desta forma, será necessário instalações prévias;
+- Spring framwork versão 3.2.0-M3;
+- [Java versão 17](https://www.oracle.com/br/java/technologies/downloads/#java17);
+- [Banco de dados PostgreSQL >14](https://www.postgresql.org/) 
 
 ### Configurações
 Realize as seguintes configurações no application.properties:

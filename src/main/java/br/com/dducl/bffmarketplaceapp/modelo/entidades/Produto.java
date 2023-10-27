@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "produto")
 @Entity
@@ -37,6 +38,6 @@ public class Produto implements Serializable {
     private boolean disponivel;
 
     @Column
-    private LocalDate dataCriacao;
+    private LocalDateTime dataCriacao;
 
 }

@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "portifolio")
-public class Portifolio implements Serializable {
+@Table(name = "portfolio")
+public class Portfolio implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -23,11 +23,11 @@ public class Portifolio implements Serializable {
     private Integer id;
 
     @ManyToMany
-    @JoinTable(name = "portifolio_fornecedor", joinColumns = @JoinColumn(name = "portifolio_id"), inverseJoinColumns = @JoinColumn(name = "fornecedor_id"))
+    @JoinTable(name = "portfolio_fornecedor", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "fornecedor_id"))
     private List<Fornecedor> fornecedores;
 
     @ManyToMany
-    @JoinTable(name = "portifolio_produto", joinColumns = @JoinColumn(name = "portifolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
+    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
     private List<Produto> produto;
 
     @Column

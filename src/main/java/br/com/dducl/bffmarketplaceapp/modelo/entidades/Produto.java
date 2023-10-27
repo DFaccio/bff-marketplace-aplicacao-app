@@ -39,4 +39,7 @@ public class Produto implements Serializable {
     @Column
     private LocalDate dataCriacao;
 
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
 }

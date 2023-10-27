@@ -17,11 +17,6 @@ public class Usuario implements Serializable {
     private static final long serialVersionUID = 1;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Integer id;
-
-    @Column
     private String nome;
 
     @ManyToMany

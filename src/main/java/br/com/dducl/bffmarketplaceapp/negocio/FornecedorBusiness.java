@@ -1,12 +1,14 @@
 package br.com.dducl.bffmarketplaceapp.negocio;
 
 import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
+import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.FornecedorRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
+import br.com.dducl.bffmarketplaceapp.util.conversores.PessoaConversor;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,9 @@ public class FornecedorBusiness {
     @Resource
     private PessoaBusiness pessoaBusiness;
 
+    @Resource
+    private PessoaConversor pessoaConversor;
+
     public ResultadoPaginado<FornecedorDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("id"));
 
@@ -46,18 +51,26 @@ public class FornecedorBusiness {
         return conversor.converte(fornecedor.get());
     }
 
-    public void insert(FornecedorDto dto) throws ValidacoesException {
+    public FornecedorDto insert(FornecedorDto dto) throws ValidacoesException {
         Optional<Fornecedor> optional = repository.findFornecedorByPessoaIdentificador(dto.getInformacoes().getIdentificador());
 
         if (optional.isPresent()) {
             throw new ValidacoesException("Fornecedor j\u00E1 cadastrado!");
         }
 
-        pessoaBusiness.insert(dto.getInformacoes());
+        PessoaDto pessoa = pessoaBusiness.insert(dto.getInformacoes());
+
+        dto.setInformacoes(pessoa);
 
         Fornecedor fornecedor = conversor.converte(dto);
 
-        repository.save(fornecedor);
+        fornecedor = repository.save(fornecedor);
+
+        dto.setId(fornecedor.getId());
+        dto.setRazaoSocial(fornecedor.getRazaoSocial());
+
+        return dto;
+
     }
 
     public FornecedorDto findByIdentificador(String identificador) throws ValidacoesException {

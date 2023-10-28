@@ -22,9 +22,16 @@ public class Portfolio implements Serializable {
     @Column
     private Integer id;
 
-    @ManyToMany
-    @JoinTable(name = "portfolio_fornecedor", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "fornecedor_id"))
-    private List<Fornecedor> fornecedores;
+    // TODO Campo não mapeado no MER
+    private String descricao;
+
+    private Integer IdFornecedor;
+
+    /*
+        @ManyToMany
+        @JoinTable(name = "portfolio_fornecedor", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "fornecedor_id"))
+        private List<Fornecedor> fornecedores;
+    */
 
     @ManyToMany
     @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))

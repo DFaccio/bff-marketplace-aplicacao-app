@@ -1,34 +1,41 @@
 package br.com.dducl.bffmarketplaceapp.util.conversores;
 
-import br.com.dducl.bffmarketplaceapp.dto.PortifolioDto;
+import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Portfolio;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PortifolioConversor {implements Conversores<Portfolio, PortifolioDto> {
-
+public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> {
     @Override
-    public PortifolioDto converte(Portifolio entidade) {
-        FornecedorDto dto = new FornecedorDto();
+    public PortfolioDto converte(Portfolio entidade) {
+        PortfolioDto dto = new PortfolioDto();
 
-        PessoaDto pessoaDto = pessoaConversor.converte(entidade.getPessoa());
+        dto.setIdFornecedor(entidade.getIdFornecedor());
+        dto.setDataVigencia(entidade.getDataVigencia().toString());
+        dto.setDataCriacao(entidade.getDataCriacao().toString());
 
-        dto.setInformacoes(pessoaDto);
-        dto.setRazaoSocial(entidade.getRazaoSocial());
-        dto.setId(entidade.getId());
+        /* TODO RETORNAR A LISTA DE PRODUTOS
+            List<Integer> produtos = entidade.getProduto()
+                .stream()
+                .filter(Produto::disponivel)
+                .map(Produto::getProduto)
+                .toList();
+        */
 
         return dto;
     }
 
     @Override
-    public Fornecedor converte(FornecedorDto dto) {
-        Fornecedor fornecedor = new Fornecedor();
+    public Portfolio converte(PortfolioDto dto) {
+        Portfolio portfolio = new Portfolio();
+        portfolio.setIdFornecedor(dto.getIdFornecedor());
 
-        fornecedor.setId(dto.getId());
-        fornecedor.setRazaoSocial(dto.getRazaoSocial());
-        fornecedor.setPessoa(pessoaConversor.converte(dto.getInformacoes()));
-
-        return fornecedor;
+        /*  TODO A DATA DE VIGENCIA É INSERIDA COMO UMA STRING CONVERTER PARA UM CAMPO DATETIME
+            String dataAsString = dto.getDataVigencia();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+            portfolio.setDataVigencia();
+         */
+        return portfolio;
     }
 }

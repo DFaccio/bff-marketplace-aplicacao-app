@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PortifolioDto extends Dto{
+public class PortfolioDto extends Dto{
 
     private Integer id;
 
@@ -19,7 +19,7 @@ public class PortifolioDto extends Dto{
 
     private boolean ativo;
 
-    private List<Integer> produtosPortifolio;
-    // no MER está como DetalhesPortifolio
+    private List<Integer> produtosPortfolio;
+    // no MER está como DetalhesPortfolio
 
 }

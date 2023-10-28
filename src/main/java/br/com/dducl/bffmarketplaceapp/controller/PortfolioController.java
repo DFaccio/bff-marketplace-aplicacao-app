@@ -1,25 +1,25 @@
 package br.com.dducl.bffmarketplaceapp.controller;
 
-import br.com.dducl.bffmarketplaceapp.dto.PortifolioDto;
-import br.com.dducl.bffmarketplaceapp.negocio.PessoaBusiness;
+import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
+import br.com.dducl.bffmarketplaceapp.negocio.PortfolioBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
 import jakarta.annotation.Resource;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/portifolio")
-public class PortifolioController {
+@RequestMapping(value = "/portfolio")
+public class PortfolioController {
 
     @Resource
     private PortfolioBusiness business;
 
     @GetMapping
-    public ResponseEntity<ResultadoPaginado<PortifolioDto>> findAll(@RequestParam(required = false) Integer pageSize,
-                                                                @RequestParam(required = false) Integer initialPage) {
+    public ResponseEntity<ResultadoPaginado<PortfolioDto>> findAll(@RequestParam(required = false) Integer pageSize,
+                                                                   @RequestParam(required = false) Integer initialPage) {
 
         Pagination page = new Pagination(initialPage, pageSize);
 
@@ -27,21 +27,14 @@ public class PortifolioController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        pessoa = business.insert(pessoa);
+    public ResponseEntity<PortfolioDto> insert(@RequestBody PortfolioDto portfolio) throws ValidacoesException {
+        portfolio = business.insert(portfolio);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoa);
+        return ResponseEntity.status(HttpStatus.CREATED).body(portfolio);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        pessoa = business.update(pessoa);
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
-    }
-
-    @GetMapping(value = "/identificador/{identificador}")
-    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
-        return ResponseEntity.ok(business.findByIdentificador(identificador));
+    @GetMapping(value = "/id/{id}")
+    public ResponseEntity<PortfolioDto> findById(@PathVariable Integer id) throws ValidacoesException {
+        return ResponseEntity.ok(business.findPortfolioById(id));
     }
 }

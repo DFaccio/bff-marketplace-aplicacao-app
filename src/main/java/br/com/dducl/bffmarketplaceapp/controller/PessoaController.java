@@ -6,6 +6,7 @@ import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
 import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,17 +27,17 @@ public class PessoaController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        business.insert(pessoa);
+    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+        pessoa = business.insert(pessoa);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoa);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
-        business.update(pessoa);
+    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+        pessoa = business.update(pessoa);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
     }
 
     @GetMapping(value = "/identificador/{identificador}")

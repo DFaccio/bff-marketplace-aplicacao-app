@@ -41,7 +41,7 @@ public class PessoaBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public void insert(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto insert(PessoaDto dto) throws ValidacoesException {
         Pessoa pessoa = conversor.converte(dto);
 
         Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getIdentificador());
@@ -64,7 +64,9 @@ public class PessoaBusiness {
         pessoa.setChaves(chaves);
         pessoa.setDataCadastro(LocalDateTime.now());
 
-        repository.save(pessoa);
+        dto = conversor.converte(repository.save(pessoa));
+
+        return dto;
     }
 
     public PessoaDto findByIdentificador(String identificador) throws ValidacoesException {
@@ -77,7 +79,7 @@ public class PessoaBusiness {
         return conversor.converte(pessoa.get());
     }
 
-    public void update(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto update(PessoaDto dto) throws ValidacoesException {
         Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
 
         if (pessoa.isEmpty()) {
@@ -91,6 +93,6 @@ public class PessoaBusiness {
         atualizar.setAtivo(dto.isAtivo());
         atualizar.setNome(dto.getNome());
 
-        repository.save(atualizar);
+        return conversor.converte(repository.save(atualizar));
     }
 }

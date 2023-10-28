@@ -1,0 +1,47 @@
+package br.com.dducl.bffmarketplaceapp.controller;
+
+import br.com.dducl.bffmarketplaceapp.dto.PortifolioDto;
+import br.com.dducl.bffmarketplaceapp.negocio.PessoaBusiness;
+import br.com.dducl.bffmarketplaceapp.util.Pagination;
+import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
+import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(value = "/portifolio")
+public class PortifolioController {
+
+    @Resource
+    private PortfolioBusiness business;
+
+    @GetMapping
+    public ResponseEntity<ResultadoPaginado<PortifolioDto>> findAll(@RequestParam(required = false) Integer pageSize,
+                                                                @RequestParam(required = false) Integer initialPage) {
+
+        Pagination page = new Pagination(initialPage, pageSize);
+
+        return ResponseEntity.ok(business.findAll(page));
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+        pessoa = business.insert(pessoa);
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoa);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+        pessoa = business.update(pessoa);
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
+    }
+
+    @GetMapping(value = "/identificador/{identificador}")
+    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
+        return ResponseEntity.ok(business.findByIdentificador(identificador));
+    }
+}

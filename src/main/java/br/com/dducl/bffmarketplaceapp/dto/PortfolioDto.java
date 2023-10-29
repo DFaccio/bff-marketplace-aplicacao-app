@@ -1,8 +1,10 @@
 package br.com.dducl.bffmarketplaceapp.dto;
 
+import br.com.dducl.bffmarketplaceapp.util.enums.StatusPortifolio;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -11,15 +13,16 @@ public class PortfolioDto extends Dto{
 
     private Integer id;
 
-    private Integer IdFornecedor;
+    private String descricao;
 
-    private String dataCriacao;
+    private LocalDateTime dataCriacao;
 
-    private String dataVigencia;
+    private LocalDateTime dataVigencia;
 
-    private boolean ativo;
+    private StatusPortifolio status;
 
-    private List<Integer> produtosPortfolio;
-    // no MER está como DetalhesPortfolio
+    private FornecedorDto fornecedor;
+
+    private List<Integer> produtos; // no MER está como DetalhesPortfolio
 
 }

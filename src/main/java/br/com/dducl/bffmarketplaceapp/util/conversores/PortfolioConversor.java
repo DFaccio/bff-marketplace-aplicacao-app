@@ -10,17 +10,11 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
     public PortfolioDto converte(Portfolio entidade) {
         PortfolioDto dto = new PortfolioDto();
 
-        dto.setIdFornecedor(entidade.getIdFornecedor());
-        dto.setDataVigencia(entidade.getDataVigencia().toString());
-        dto.setDataCriacao(entidade.getDataCriacao().toString());
-
-        /* TODO RETORNAR A LISTA DE PRODUTOS
-            List<Integer> produtos = entidade.getProduto()
-                .stream()
-                .filter(Produto::disponivel)
-                .map(Produto::getProduto)
-                .toList();
-        */
+        dto.setId(entidade.getId());
+        dto.setDescricao(entidade.getDescricao());
+        dto.setStatus(entidade.getStatus());
+        dto.setDataVigencia(entidade.getDataVigencia());
+        dto.setDataCriacao(entidade.getDataCriacao());
 
         return dto;
     }
@@ -28,14 +22,15 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
     @Override
     public Portfolio converte(PortfolioDto dto) {
         Portfolio portfolio = new Portfolio();
-        portfolio.setIdFornecedor(dto.getIdFornecedor());
 
-        /*  TODO A DATA DE VIGENCIA É INSERIDA COMO UMA STRING CONVERTER PARA UM CAMPO DATETIME
-            String dataAsString = dto.getDataVigencia();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
-            portfolio.setDataVigencia();
-         */
+        System.out.println("Fornecedor da entidade");
+        System.out.println(dto.getFornecedor().getId());
+
+        portfolio.setId(dto.getId());
+        portfolio.setDescricao(dto.getDescricao());
+        portfolio.setStatus(dto.getStatus());
+        portfolio.setDataVigencia(dto.getDataVigencia());
+
         return portfolio;
     }
 }

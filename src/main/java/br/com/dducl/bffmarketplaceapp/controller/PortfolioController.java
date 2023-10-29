@@ -33,6 +33,20 @@ public class PortfolioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(portfolio);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<PortfolioDto> update(@RequestBody PortfolioDto portfolio) throws ValidacoesException {
+        portfolio = business.update(portfolio);
+
+        return ResponseEntity.ok(portfolio);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id){
+        String mensagemAcao = business.delete(id);
+        return ResponseEntity.ok(mensagemAcao);
+    }
+
+
     @GetMapping(value = "/id/{id}")
     public ResponseEntity<PortfolioDto> findById(@PathVariable Integer id) throws ValidacoesException {
         return ResponseEntity.ok(business.findPortfolioById(id));

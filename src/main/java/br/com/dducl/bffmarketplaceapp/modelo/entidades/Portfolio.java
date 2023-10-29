@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "portfolio")
 public class Portfolio implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -22,28 +24,27 @@ public class Portfolio implements Serializable {
     @Column
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
+
     // TODO Campo não mapeado no MER
+    @Column
     private String descricao;
-
-    private Integer IdFornecedor;
-
-    /*
-        @ManyToMany
-        @JoinTable(name = "portfolio_fornecedor", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "fornecedor_id"))
-        private List<Fornecedor> fornecedores;
-    */
 
     @ManyToMany
     @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
-    private List<Produto> produto;
+    private List<PortfolioProdutos> produtos;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataCriacao;
 
+    @Column
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataVigencia;
 
+    @Column
     @Enumerated(value = EnumType.STRING)
     private StatusPortifolio status;
 }

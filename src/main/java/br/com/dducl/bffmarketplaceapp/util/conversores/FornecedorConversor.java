@@ -3,6 +3,7 @@ package br.com.dducl.bffmarketplaceapp.util.conversores;
 import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
 import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class FornecedorConversor implements Conversores<Fornecedor, FornecedorDt
     }
 
     @Override
-    public Fornecedor converte(FornecedorDto dto) {
+    public Fornecedor converte(FornecedorDto dto) throws ValidationsException {
         Fornecedor fornecedor = new Fornecedor();
 
         fornecedor.setId(dto.getId());

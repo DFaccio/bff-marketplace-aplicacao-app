@@ -4,7 +4,11 @@ import br.com.dducl.bffmarketplaceapp.modelo.entidades.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+import java.util.Optional;
 
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+    Optional<Usuario> findByNomeEquals(String nome);
+
+    Optional<Usuario> findByNomeEqualsAndSenha_senha(String username, String password);
 }

@@ -5,9 +5,12 @@ import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.negocio.FornecedorBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
-import org.springframework.http.HttpStatusCode;
+
+import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,19 +31,19 @@ public class FornecedorController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<FornecedorDto> findById(@PathVariable Integer id) throws ValidacoesException {
+    public ResponseEntity<FornecedorDto> findById(@PathVariable Integer id) throws NotFoundException {
         return ResponseEntity.ok(business.findById(id));
     }
 
     @PostMapping("/new")
-    public ResponseEntity<FornecedorDto> insert(@RequestBody FornecedorDto fornecedor) throws ValidacoesException {
-        fornecedor = business.insert(fornecedor);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(fornecedor);
+    public ResponseEntity<FornecedorDto> insert(@RequestBody FornecedorDto fornecedor) throws ValidationsException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(business.insert(fornecedor));
+
     }
 
     @GetMapping(value = "/identificador/{identificador}")
-    public ResponseEntity<FornecedorDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
+    public ResponseEntity<FornecedorDto> findByIdentificador(@PathVariable String identificador) throws NotFoundException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }
 }

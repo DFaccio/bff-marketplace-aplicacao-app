@@ -8,6 +8,7 @@ import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class PessoaController {
         PessoaDto dto = business.update(pessoa);
 
         return ResponseEntity.ok(dto);
+
     }
 
     @GetMapping(value = "/identificador/{identificador}")

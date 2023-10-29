@@ -12,16 +12,20 @@ Para um maior entendimento sobre o projeto, sinta-se livre para acessar nossa do
 
 O projeto foi idealizado e está sendo construído ao longo do curso de Arquitetura e Desenvolvimento Java da FIAP.
 
+
 Membros do grupo de desenvolvimento:
+
  - [Aydan Amorim](https://github.com/AydanAmorim/)
  - [Danilo Faccio](https://github.com/DFaccio/)
  - [Erick Ribeiro](https://github.com/erickmatheusribeiro)
  - [Isabela França](https://github.com/fysabelah)
 
 ### Itens a instalar
+
 O projeto utiliza as seguintes tecnologias. Desta forma, será necessário instalações prévias.
 - [Java versão 17](https://www.oracle.com/br/java/technologies/downloads/#java17);
 - [Banco de dados PostgreSQL >= 14](https://www.postgresql.org/)
+
 
 ### Configurações
 Realize as seguintes configurações no application.properties:

@@ -1,6 +1,7 @@
 package br.com.dducl.bffmarketplaceapp.negocio;
 
 import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
+import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.FornecedorRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
@@ -29,6 +30,9 @@ public class FornecedorBusiness {
     @Resource
     private PessoaBusiness pessoaBusiness;
 
+    @Resource
+    private PessoaConversor pessoaConversor;
+
     public ResultadoPaginado<FornecedorDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("id"));
 
@@ -54,7 +58,9 @@ public class FornecedorBusiness {
             throw new ValidationsException("Fornecedor j\u00E1 cadastrado!");
         }
 
-        pessoaBusiness.insert(dto.getInformacoes());
+        PessoaDto pessoa = pessoaBusiness.insert(dto.getInformacoes());
+
+        dto.setInformacoes(pessoa);
 
         Fornecedor fornecedor = conversor.converte(dto);
 

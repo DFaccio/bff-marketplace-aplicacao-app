@@ -7,6 +7,7 @@ import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class FornecedorController {
 
     @PostMapping("/new")
 
-    public ResponseEntity<FornecedorDto> insert(@RequestBody FornecedorDto fornecedor) throws ValidationsException {
+    public ResponseEntity<FornecedorDto> insert(@Valid @RequestBody FornecedorDto fornecedor) throws ValidationsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(business.insert(fornecedor));
     }
 

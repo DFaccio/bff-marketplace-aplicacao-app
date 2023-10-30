@@ -1,7 +1,6 @@
 package br.com.dducl.bffmarketplaceapp.controller;
 
 import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
-import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.negocio.FornecedorBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
@@ -37,7 +36,6 @@ public class FornecedorController {
 
     public ResponseEntity<FornecedorDto> insert(@RequestBody FornecedorDto fornecedor) throws ValidationsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(business.insert(fornecedor));
-
     }
 
     @GetMapping(value = "/identificador/{identificador}")

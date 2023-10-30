@@ -36,6 +36,7 @@ public class FornecedorController {
 
     public ResponseEntity<FornecedorDto> insert(@RequestBody FornecedorDto fornecedor) throws ValidationsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(business.insert(fornecedor));
+
     }
 
     @GetMapping(value = "/identificador/{identificador}")

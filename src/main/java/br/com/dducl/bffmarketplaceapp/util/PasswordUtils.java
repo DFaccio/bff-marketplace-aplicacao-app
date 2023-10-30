@@ -23,7 +23,5 @@ public class PasswordUtils {
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException("No such algorithm");
         }
-
-
     }
 }

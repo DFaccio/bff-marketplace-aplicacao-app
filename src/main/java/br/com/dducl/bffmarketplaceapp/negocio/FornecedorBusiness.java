@@ -30,9 +30,6 @@ public class FornecedorBusiness {
     @Resource
     private PessoaBusiness pessoaBusiness;
 
-    @Resource
-    private PessoaConversor pessoaConversor;
-
     public ResultadoPaginado<FornecedorDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("id"));
 

@@ -54,7 +54,6 @@ public class PessoaConversor implements Conversores<Pessoa, PessoaDto> {
         if (dto.getDataCadastro() != null) {
             pessoa.setDataCadastro(LocalDateTime.parse(dto.getDataCadastro()));
         }
-
         if (dto.getEndereco() != null) {
             pessoa.setEndereco(enderecoConversor.converte(dto.getEndereco()));
         }

@@ -1,14 +1,13 @@
 package br.com.dducl.bffmarketplaceapp.negocio;
 
 import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
-import br.com.dducl.bffmarketplaceapp.modelo.entidades.ChavesPix;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Pessoa;
-import br.com.dducl.bffmarketplaceapp.modelo.persistencia.ChavesPixRepository;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.PessoaRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PessoaConversor;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,9 +28,6 @@ public class PessoaBusiness {
     @Resource
     private PessoaRepository repository;
 
-    @Resource
-    private ChavesPixRepository chavesPixRepository;
-
     public ResultadoPaginado<PessoaDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("identificador"));
 
@@ -41,58 +36,55 @@ public class PessoaBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public PessoaDto insert(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto insert(PessoaDto dto) throws ValidationsException {
         Pessoa pessoa = conversor.converte(dto);
 
         Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getIdentificador());
 
         if (jaCriada.isPresent()) {
-            throw new ValidacoesException("Pessoa j\u00E1 cadastrada!!");
+            throw new ValidationsException("Pessoa j\u00E1 cadastrada!!");
         }
 
-        List<ChavesPix> chaves = dto.getChavesAtivas().stream().map(chave -> {
-            ChavesPix nova = new ChavesPix();
-            nova.setChave(chave);
-            nova.setAtivo(true);
-            nova.setDataCadastro(LocalDate.now());
-
-            return nova;
-        }).toList();
-
-        chaves = chavesPixRepository.saveAll(chaves);
-
-        pessoa.setChaves(chaves);
+        pessoa.getChaves().forEach(chave -> chave.setDataCadastro(LocalDate.now()));
         pessoa.setDataCadastro(LocalDateTime.now());
 
-        dto = conversor.converte(repository.save(pessoa));
+        pessoa = repository.save(pessoa);
 
-        return dto;
+        return conversor.converte(pessoa);
     }
 
-    public PessoaDto findByIdentificador(String identificador) throws ValidacoesException {
+    public PessoaDto findByIdentificador(String identificador) throws NotFoundException {
         Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(identificador);
 
         if (pessoa.isEmpty()) {
-            throw new ValidacoesException("Pessoa n\u00E3o identificada!");
+            throw new NotFoundException(identificador, "Pessoa");
         }
 
         return conversor.converte(pessoa.get());
     }
 
-    public PessoaDto update(PessoaDto dto) throws ValidacoesException {
-        Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
+    public PessoaDto update(PessoaDto dto) throws ValidationsException {
+        Optional<Pessoa> optional = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
 
-        if (pessoa.isEmpty()) {
-            throw new ValidacoesException("Pessoa informada para atualiza\u00E7\u00E3o n\u00E3o foi encontrada!");
+        if (optional.isEmpty()) {
+            throw new ValidationsException("Pessoa informada para atualiza\u00E7\u00E3o n\u00E3o foi encontrada!");
         }
 
-        Pessoa atualizar = pessoa.get();
+        Pessoa atualizar = optional.get();
 
-        atualizar.setTelefone(dto.getTelefone());
-        atualizar.setEmail(dto.getEmail());
-        atualizar.setAtivo(dto.isAtivo());
-        atualizar.setNome(dto.getNome());
+        Pessoa pessoa = conversor.converte(dto);
 
-        return conversor.converte(repository.save(atualizar));
+        atualizar.setTelefone(pessoa.getTelefone());
+        atualizar.setEmail(pessoa.getEmail());
+        atualizar.setAtivo(pessoa.isAtivo());
+        atualizar.setNome(pessoa.getNome());
+
+        if (pessoa.getEndereco() != null) {
+            atualizar.setEndereco(pessoa.getEndereco());
+        }
+
+        pessoa = repository.save(atualizar);
+
+        return conversor.converte(pessoa);
     }
 }

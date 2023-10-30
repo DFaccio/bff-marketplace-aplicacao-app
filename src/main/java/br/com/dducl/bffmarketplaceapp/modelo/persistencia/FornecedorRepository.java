@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer> {
 
     Optional<Fornecedor> findFornecedorByPessoaIdentificador(String identificador);
+
 }

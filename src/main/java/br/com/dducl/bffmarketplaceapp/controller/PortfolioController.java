@@ -41,7 +41,7 @@ public class PortfolioController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id){
+    public ResponseEntity<String> delete(@PathVariable int id) {
         String mensagemAcao = business.delete(id);
         return ResponseEntity.ok(mensagemAcao);
     }

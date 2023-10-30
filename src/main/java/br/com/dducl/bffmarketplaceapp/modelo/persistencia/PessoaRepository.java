@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface PessoaRepository extends JpaRepository<Pessoa, String> {
 
     Optional<Pessoa> findPessoaByIdentificadorEquals(String identificador);
+
+    Optional<Pessoa> findPessoaByIdentificadorEqualsAndUsuario_Nome(String identificador, String usuario);
 }

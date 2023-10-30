@@ -13,8 +13,8 @@ public class ExceptionHandlerUtil {
 
     private StandardError err = new StandardError();
 
-    @ExceptionHandler(ValidacoesException.class)
-    public ResponseEntity<StandardError> entityNotFound(ValidacoesException e, HttpServletRequest request){
+    @ExceptionHandler(ValidationsException.class)
+    public ResponseEntity<StandardError> entityNotFound(ValidationsException e, HttpServletRequest request){
         HttpStatus status = HttpStatus.NOT_FOUND;
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());

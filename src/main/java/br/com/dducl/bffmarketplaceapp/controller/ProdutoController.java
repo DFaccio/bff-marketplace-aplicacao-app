@@ -4,7 +4,7 @@ import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
 import br.com.dducl.bffmarketplaceapp.negocio.ProdutoBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +32,14 @@ public class ProdutoController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws ValidacoesException {
+    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws ValidationsException {
         produto = business.insert(produto);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidacoesException {
+    public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidationsException {
         produto = business.update(produto);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);

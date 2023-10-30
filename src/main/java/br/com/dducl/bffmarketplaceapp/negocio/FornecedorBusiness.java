@@ -6,7 +6,7 @@ import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.FornecedorRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PessoaConversor;
 import jakarta.annotation.Resource;
@@ -41,21 +41,21 @@ public class FornecedorBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public FornecedorDto findById(Integer id) throws ValidacoesException {
+    public FornecedorDto findById(Integer id) throws ValidationsException {
         Optional<Fornecedor> fornecedor = repository.findById(id);
 
         if (fornecedor.isEmpty()) {
-            throw new ValidacoesException("Fornecedor n\u00E3o encontrado!");
+            throw new ValidationsException("Fornecedor n\u00E3o encontrado!");
         }
 
         return conversor.converte(fornecedor.get());
     }
 
-    public FornecedorDto insert(FornecedorDto dto) throws ValidacoesException {
+    public FornecedorDto insert(FornecedorDto dto) throws ValidationsException {
         Optional<Fornecedor> optional = repository.findFornecedorByPessoaIdentificador(dto.getInformacoes().getIdentificador());
 
         if (optional.isPresent()) {
-            throw new ValidacoesException("Fornecedor j\u00E1 cadastrado!");
+            throw new ValidationsException("Fornecedor j\u00E1 cadastrado!");
         }
 
         PessoaDto pessoa = pessoaBusiness.insert(dto.getInformacoes());
@@ -73,11 +73,11 @@ public class FornecedorBusiness {
 
     }
 
-    public FornecedorDto findByIdentificador(String identificador) throws ValidacoesException {
+    public FornecedorDto findByIdentificador(String identificador) throws ValidationsException {
         Optional<Fornecedor> fornecedor = repository.findFornecedorByPessoaIdentificador(identificador);
 
         if (fornecedor.isEmpty()) {
-            throw new ValidacoesException("Fornecedor n\u00E3o encontrado!");
+            throw new ValidationsException("Fornecedor n\u00E3o encontrado!");
         }
 
         return conversor.converte(fornecedor.get());

@@ -7,7 +7,7 @@ import br.com.dducl.bffmarketplaceapp.modelo.persistencia.ChavesPixRepository;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.PessoaRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PessoaConversor;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
@@ -41,13 +41,13 @@ public class PessoaBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public PessoaDto insert(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto insert(PessoaDto dto) throws ValidationsException {
         Pessoa pessoa = conversor.converte(dto);
 
         Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getIdentificador());
 
         if (jaCriada.isPresent()) {
-            throw new ValidacoesException("Pessoa j\u00E1 cadastrada!!");
+            throw new ValidationsException("Pessoa j\u00E1 cadastrada!!");
         }
 
         List<ChavesPix> chaves = dto.getChavesAtivas().stream().map(chave -> {
@@ -69,21 +69,21 @@ public class PessoaBusiness {
         return dto;
     }
 
-    public PessoaDto findByIdentificador(String identificador) throws ValidacoesException {
+    public PessoaDto findByIdentificador(String identificador) throws ValidationsException {
         Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(identificador);
 
         if (pessoa.isEmpty()) {
-            throw new ValidacoesException("Pessoa n\u00E3o identificada!");
+            throw new ValidationsException("Pessoa n\u00E3o identificada!");
         }
 
         return conversor.converte(pessoa.get());
     }
 
-    public PessoaDto update(PessoaDto dto) throws ValidacoesException {
+    public PessoaDto update(PessoaDto dto) throws ValidationsException {
         Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
 
         if (pessoa.isEmpty()) {
-            throw new ValidacoesException("Pessoa informada para atualiza\u00E7\u00E3o n\u00E3o foi encontrada!");
+            throw new ValidationsException("Pessoa informada para atualiza\u00E7\u00E3o n\u00E3o foi encontrada!");
         }
 
         Pessoa atualizar = pessoa.get();

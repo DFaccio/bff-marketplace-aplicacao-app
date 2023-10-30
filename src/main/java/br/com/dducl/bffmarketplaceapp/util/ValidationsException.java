@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ValidacoesException extends Exception {
+public class ValidationsException extends Exception {
 
-    public ValidacoesException(String message) {
+    public ValidationsException(String message) {
         super(message);
     }
 }

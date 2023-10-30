@@ -5,7 +5,7 @@ import br.com.dducl.bffmarketplaceapp.modelo.entidades.Produto;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.ProdutoRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.ProdutoConversor;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ public class ProdutoBusiness {
     @Resource
     private ProdutoRepository repository;
 
-    public ProdutoDto insert(ProdutoDto dto) throws ValidacoesException {
+    public ProdutoDto insert(ProdutoDto dto) throws ValidationsException {
         Produto produto = conversor.converte(dto);
 
         produto.setDataCriacao(LocalDateTime.now());
@@ -45,11 +45,11 @@ public class ProdutoBusiness {
         return conversor.converte(produto);
     }
 
-    public ProdutoDto update(ProdutoDto dto) throws ValidacoesException {
+    public ProdutoDto update(ProdutoDto dto) throws ValidationsException {
         var produto = repository.getReferenceById(dto.getId());
 
         if (produto.equals(null)) {
-            throw new ValidacoesException("Produto informado para atualiza\u00E7\u00E3o n\u00E3o foi encontrado!");
+            throw new ValidationsException("Produto informado para atualiza\u00E7\u00E3o n\u00E3o foi encontrado!");
         }
 
         Produto atualizar = produto;

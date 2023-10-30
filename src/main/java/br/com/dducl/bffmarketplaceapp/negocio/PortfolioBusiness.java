@@ -9,7 +9,7 @@ import br.com.dducl.bffmarketplaceapp.modelo.persistencia.PortfolioProdutosRepos
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.PortfolioRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PortfolioConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.ProdutoConversor;
@@ -53,7 +53,7 @@ public class PortfolioBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public PortfolioDto insert(PortfolioDto dto) throws ValidacoesException {
+    public PortfolioDto insert(PortfolioDto dto) throws ValidationsException {
         Portfolio portfolio = conversor.converte(dto);
 
         Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaIdentificador(dto.getFornecedor().getInformacoes().getIdentificador());
@@ -61,13 +61,13 @@ public class PortfolioBusiness {
         if (fornecedor.isPresent()){
             portfolio.setFornecedor(fornecedor.get());
         } else {
-            throw new ValidacoesException("Código do fornecedor não encontrado, não foi realizada a inclusão do portfólio.");
+            throw new ValidationsException("Código do fornecedor não encontrado, não foi realizada a inclusão do portfólio.");
         }
 
         Optional<Portfolio> portfolioCriado = repository.findPortfolioByFornecedorAndDescricao(portfolio.getFornecedor(), portfolio.getDescricao());
 
         if (portfolioCriado.isPresent()) {
-            throw new ValidacoesException("Portfólio já cadastrado para este fornecedor e mesma descrição, por favor verifique!");
+            throw new ValidationsException("Portfólio já cadastrado para este fornecedor e mesma descrição, por favor verifique!");
         }
 
         portfolio.setDataCriacao(LocalDateTime.now());
@@ -97,11 +97,11 @@ public class PortfolioBusiness {
         return conversor.converte(portfolio);
     }
 
-    public PortfolioDto update(PortfolioDto dto) throws ValidacoesException {
+    public PortfolioDto update(PortfolioDto dto) throws ValidationsException {
         Optional<Portfolio> portfolio = repository.findPortfolioById(dto.getId());
 
         if (portfolio.isEmpty()) {
-            throw new ValidacoesException("ID do portfolio informado não é válido, não é possível alterar!");
+            throw new ValidationsException("ID do portfolio informado não é válido, não é possível alterar!");
         }
 
         Portfolio portfolioToUpdate = portfolio.get();

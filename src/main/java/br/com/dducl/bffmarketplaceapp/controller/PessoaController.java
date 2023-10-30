@@ -4,7 +4,7 @@ import br.com.dducl.bffmarketplaceapp.dto.PessoaDto;
 import br.com.dducl.bffmarketplaceapp.negocio.PessoaBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
-import br.com.dducl.bffmarketplaceapp.util.ValidacoesException;
+import br.com.dducl.bffmarketplaceapp.util.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -27,21 +27,21 @@ public class PessoaController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+    public ResponseEntity<PessoaDto> insert(@RequestBody PessoaDto pessoa) throws ValidationsException {
         pessoa = business.insert(pessoa);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoa);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidacoesException {
+    public ResponseEntity<PessoaDto> update(@RequestBody PessoaDto pessoa) throws ValidationsException {
         pessoa = business.update(pessoa);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(pessoa);
     }
 
     @GetMapping(value = "/identificador/{identificador}")
-    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws ValidacoesException {
+    public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws ValidationsException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }
 }

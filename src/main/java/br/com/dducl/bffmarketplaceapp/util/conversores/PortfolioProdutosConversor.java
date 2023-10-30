@@ -2,6 +2,7 @@ package br.com.dducl.bffmarketplaceapp.util.conversores;
 
 import br.com.dducl.bffmarketplaceapp.dto.PortfolioProdutosDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.PortfolioProdutos;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +22,7 @@ public class PortfolioProdutosConversor implements Conversores<PortfolioProdutos
         }
 
         @Override
-        public PortfolioProdutos converte(PortfolioProdutosDto dto) {
+        public PortfolioProdutos converte(PortfolioProdutosDto dto) throws ValidationsException {
             PortfolioProdutos portfolioProdutos = new PortfolioProdutos();
 
             portfolioProdutos.setId(dto.getId());

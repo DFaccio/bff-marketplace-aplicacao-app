@@ -3,6 +3,7 @@ package br.com.dducl.bffmarketplaceapp.util.conversores;
 import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
 import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Portfolio;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
     }
 
     @Override
-    public Portfolio converte(PortfolioDto dto) {
+    public Portfolio converte(PortfolioDto dto) throws ValidationsException  {
         Portfolio portfolio = new Portfolio();
 
         portfolio.setId(dto.getId());

@@ -23,6 +23,5 @@ public class PortfolioDto extends Dto{
 
     private FornecedorDto fornecedor;
 
-    private List<Integer> produtos; // no MER está como DetalhesPortfolio
-
+    private List<ProdutoDto> portfolioProdutos;
 }

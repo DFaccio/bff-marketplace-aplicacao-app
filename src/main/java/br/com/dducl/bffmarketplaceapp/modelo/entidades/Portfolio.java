@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,13 +27,12 @@ public class Portfolio implements Serializable {
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
 
-    // TODO Campo não mapeado no MER
     @Column
     private String descricao;
 
     @ManyToMany
-    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
-    private List<PortfolioProdutos> produtos;
+    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "idPortfolio"), inverseJoinColumns = @JoinColumn(name = "idProduto"))
+    private List<PortfolioProdutos> portfolioProdutos;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,19 +1,20 @@
 package br.com.dducl.bffmarketplaceapp.modelo.entidades;
 
+import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "portfolio_produto")
-
 public class PortfolioProdutos implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -21,13 +22,15 @@ public class PortfolioProdutos implements Serializable {
     @Column
     private Integer id;
 
-    @Column
-    private Integer IdPortfolio;
+    @ManyToOne
+    @JoinColumn(name = "idPortfolio")
+    private Portfolio portfolio;
+
+    @ManyToOne
+    @JoinColumn(name = "idProduto")
+    private Produto produto;
 
     @Column
-    private Integer IdProduto;
-
-    @Column
-    @Temporal(TemporalType.DATE)
-    private LocalDate dataCadastro;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataCriacao;
 }

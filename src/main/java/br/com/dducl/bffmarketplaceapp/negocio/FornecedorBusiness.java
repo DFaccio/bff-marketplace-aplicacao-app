@@ -7,6 +7,7 @@ import br.com.dducl.bffmarketplaceapp.modelo.persistencia.FornecedorRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
+import br.com.dducl.bffmarketplaceapp.util.conversores.PessoaConversor;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;

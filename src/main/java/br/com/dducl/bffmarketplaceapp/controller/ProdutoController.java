@@ -7,6 +7,7 @@ import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 
 import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,20 +36,20 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) {
         produto = business.insert(produto);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
     }
 
     @PutMapping("/update")
     public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidationsException {
         produto = business.update(produto);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
+        return ResponseEntity.ok().body(produto);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ProdutoDto> delete(@PathVariable int id) {
         ProdutoDto produto = business.delete(business.findProdutoById(id));
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
+        return ResponseEntity.ok().body(produto);
     }
 }

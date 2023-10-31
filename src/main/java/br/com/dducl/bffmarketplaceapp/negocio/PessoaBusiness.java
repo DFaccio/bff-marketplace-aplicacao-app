@@ -45,7 +45,11 @@ public class PessoaBusiness {
             throw new ValidationsException("Pessoa j\u00E1 cadastrada!!");
         }
 
-        pessoa.getChaves().forEach(chave -> chave.setDataCadastro(LocalDate.now()));
+        pessoa.getChaves().forEach(chave -> {
+            chave.setDataCadastro(LocalDate.now());
+            chave.setId(null);
+        });
+
         pessoa.setDataCadastro(LocalDateTime.now());
 
         pessoa = repository.save(pessoa);

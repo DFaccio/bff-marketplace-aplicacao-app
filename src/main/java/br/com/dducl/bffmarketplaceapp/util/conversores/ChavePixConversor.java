@@ -11,6 +11,7 @@ public class ChavePixConversor implements Conversores<ChavesPix, ChavesPixDto> {
     public ChavesPixDto converte(ChavesPix entidade) {
         ChavesPixDto dto = new ChavesPixDto();
 
+        dto.setId(entidade.getId());
         dto.setChave(entidade.getChave());
         dto.setAtivo(entidade.isAtivo());
 
@@ -21,6 +22,7 @@ public class ChavePixConversor implements Conversores<ChavesPix, ChavesPixDto> {
     public ChavesPix converte(ChavesPixDto dto) {
         ChavesPix entidade = new ChavesPix();
 
+        entidade.setId(dto.getId());
         entidade.setChave(dto.getChave());
         entidade.setAtivo(dto.isAtivo());
 

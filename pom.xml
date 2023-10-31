@@ -12,7 +12,7 @@
 
     <groupId>br.com.dducl</groupId>
     <artifactId>bff-marketplace-application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>bff-marketplace-application</name>
     <description>Coffee Collective Purchase Marketplace</description>
 

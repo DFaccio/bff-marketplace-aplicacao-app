@@ -6,6 +6,7 @@ import br.com.dducl.bffmarketplaceapp.negocio.UsuarioBusiness;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class UsuarioController {
     private UsuarioBusiness usuarioBusiness;
 
     @PostMapping
-    public ResponseEntity<Void> insert(@RequestBody UsuarioCadastroDto dto) throws ValidationsException {
+    public ResponseEntity<Void> insert(@Valid @RequestBody UsuarioCadastroDto dto) throws ValidationsException {
         usuarioBusiness.insert(dto);
 
         return ResponseEntity.noContent().build();

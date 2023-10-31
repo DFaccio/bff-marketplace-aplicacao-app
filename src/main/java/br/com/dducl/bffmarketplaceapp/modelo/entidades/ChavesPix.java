@@ -16,6 +16,11 @@ public class ChavesPix implements Serializable {
     private static final long serialVersionUID = 1;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column
     private String chave;
 
     @Column

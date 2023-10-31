@@ -4,12 +4,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class ChavesPixDto extends Dto {
+@Getter
+public class GrupoCompraDto extends Dto {
 
-    @NotBlank(message = "Chave é um campo obrigatório")
-    private String chave;
+    private String dataCriacao;
+
+    @NotBlank(message = "Nome do Grupo é obrigatório")
+    private String nome;
 
     private boolean ativo;
 }

@@ -1,6 +1,5 @@
 package br.com.dducl.bffmarketplaceapp.modelo.entidades;
 
-import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +40,7 @@ public class Pessoa implements Serializable {
     private Usuario usuario;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "pessoa_chave", joinColumns = @JoinColumn(name = "pessoa_identification"), inverseJoinColumns = @JoinColumn(name = "chaves_pix"))
+    @JoinTable(name = "pessoa_chave", joinColumns = @JoinColumn(name = "pessoa_id"), inverseJoinColumns = @JoinColumn(name = "chaves_pix"))
     private List<ChavesPix> chaves;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -61,13 +60,5 @@ public class Pessoa implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(identificador);
-    }
-
-    public void setNome(String nome) throws ValidationsException {
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new ValidationsException("Nome n\u00E3o pode ser vazio!");
-        }
-
-        this.nome = nome;
     }
 }

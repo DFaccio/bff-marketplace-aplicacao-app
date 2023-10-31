@@ -11,5 +11,5 @@ public interface PessoaRepository extends JpaRepository<Pessoa, String> {
 
     Optional<Pessoa> findPessoaByIdentificadorEquals(String identificador);
 
-    Optional<Pessoa> findPessoaByIdentificadorEqualsAndUsuario_Nome(String identificador, String usuario);
+    Optional<Pessoa> findPessoaByIdentificadorEqualsAndChaves_Chave(String identificador, String chave);
 }

@@ -1,16 +1,21 @@
 package br.com.dducl.bffmarketplaceapp.util.conversores;
 
-import br.com.dducl.bffmarketplaceapp.dto.FornecedorDto;
-import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
+import br.com.dducl.bffmarketplaceapp.dto.*;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Portfolio;
+import br.com.dducl.bffmarketplaceapp.modelo.entidades.Produto;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> {
     @Resource
     private FornecedorConversor fornecedorConversor;
+
+    @Resource
+    private ProdutoConversor produtoConversor;
 
     @Override
     public PortfolioDto converte(Portfolio entidade) {
@@ -25,6 +30,9 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
         dto.setDataVigencia(entidade.getDataVigencia());
         dto.setDataCriacao(entidade.getDataCriacao());
 
+        List<ProdutoDto> produtos = produtoConversor.converteEntidades(entidade.getPortfolioProdutos());
+        dto.setPortfolioProdutos(produtos);
+
         return dto;
     }
 
@@ -37,6 +45,9 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
         portfolio.setStatus(dto.getStatus());
         portfolio.setDataVigencia(dto.getDataVigencia());
         portfolio.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));
+
+        List<Produto> produtos = produtoConversor.converteDto(dto.getPortfolioProdutos());
+        portfolio.setPortfolioProdutos(produtos);
 
         return portfolio;
     }

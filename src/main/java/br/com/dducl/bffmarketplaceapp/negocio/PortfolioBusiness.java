@@ -11,7 +11,6 @@ import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PortfolioConversor;
-import br.com.dducl.bffmarketplaceapp.util.conversores.ProdutoConversor;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,9 +39,6 @@ public class PortfolioBusiness {
 
     @Resource
     private FornecedorConversor fornecedorConversor;
-
-    @Resource
-    private ProdutoConversor produtoConversor;
 
     public ResultadoPaginado<PortfolioDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("descricao"));
@@ -72,22 +67,11 @@ public class PortfolioBusiness {
 
         portfolio.setDataCriacao(LocalDateTime.now());
 
-        PortfolioDto dtoListaProdutos = dto;
-
+        portfolio.getPortfolioProdutos().forEach(produto -> produto.setDataCriacao(LocalDateTime.now()));
         Portfolio portfolioSalvo = repository.save(portfolio);
+
         dto = conversor.converte(portfolioSalvo);
         dto.setFornecedor( fornecedorConversor.converte(portfolio.getFornecedor()));
-
-        List<PortfolioProdutos> portfolioProdutos = dtoListaProdutos.getPortfolioProdutos().stream().map(produto -> {
-            PortfolioProdutos novoPortfolioProduto = new PortfolioProdutos();
-
-            novoPortfolioProduto.setPortfolio(portfolioSalvo);
-            novoPortfolioProduto.setProduto(produtoConversor.converte(produto));
-            novoPortfolioProduto.setDataCriacao(LocalDateTime.now());
-            return novoPortfolioProduto;
-        }).toList();
-
-        portfolioProdutosRepository.saveAll(portfolioProdutos);
 
         return dto;
     }

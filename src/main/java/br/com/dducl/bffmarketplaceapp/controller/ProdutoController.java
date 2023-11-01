@@ -4,6 +4,7 @@ import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
 import br.com.dducl.bffmarketplaceapp.negocio.ProdutoBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 
 import jakarta.annotation.Resource;
@@ -32,7 +33,7 @@ public class ProdutoController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) {
+    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws NotFoundException, ValidationsException {
         produto = business.insert(produto);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);

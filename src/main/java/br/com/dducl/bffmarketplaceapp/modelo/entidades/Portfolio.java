@@ -32,7 +32,7 @@ public class Portfolio implements Serializable {
 
     @ManyToMany
     @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "idPortfolio"), inverseJoinColumns = @JoinColumn(name = "idProduto"))
-    private List<Produto> portfolioProdutos;
+    private List<Produto> produtos;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)

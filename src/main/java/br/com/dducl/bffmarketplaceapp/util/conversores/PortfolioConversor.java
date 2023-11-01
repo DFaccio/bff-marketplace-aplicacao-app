@@ -30,8 +30,8 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
         dto.setDataVigencia(entidade.getDataVigencia());
         dto.setDataCriacao(entidade.getDataCriacao());
 
-        List<ProdutoDto> produtos = produtoConversor.converteEntidades(entidade.getPortfolioProdutos());
-        dto.setPortfolioProdutos(produtos);
+        List<ProdutoDto> produtos = produtoConversor.converteEntidades(entidade.getProdutos());
+        dto.setProdutos(produtos);
 
         return dto;
     }
@@ -46,8 +46,8 @@ public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> 
         portfolio.setDataVigencia(dto.getDataVigencia());
         portfolio.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));
 
-        List<Produto> produtos = produtoConversor.converteDto(dto.getPortfolioProdutos());
-        portfolio.setPortfolioProdutos(produtos);
+        List<Produto> produtos = produtoConversor.converteDto(dto.getProdutos());
+        portfolio.setProdutos(produtos);
 
         return portfolio;
     }

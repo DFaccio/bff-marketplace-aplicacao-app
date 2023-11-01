@@ -10,9 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class PortfolioDto extends Dto{
-
-    private Integer id;
-
     private String descricao;
 
     private LocalDateTime dataCriacao;
@@ -23,5 +20,5 @@ public class PortfolioDto extends Dto{
 
     private FornecedorDto fornecedor;
 
-    private List<ProdutoDto> portfolioProdutos;
+    private List<ProdutoDto> produtos;
 }

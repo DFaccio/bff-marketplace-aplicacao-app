@@ -4,6 +4,7 @@ import br.com.dducl.bffmarketplaceapp.dto.PortfolioDto;
 import br.com.dducl.bffmarketplaceapp.negocio.PortfolioBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
@@ -27,23 +28,23 @@ public class PortfolioController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<PortfolioDto> insert(@RequestBody PortfolioDto portfolio) throws ValidationsException {
+    public ResponseEntity<PortfolioDto> insert(@RequestBody PortfolioDto portfolio) throws ValidationsException, NotFoundException {
         portfolio = business.insert(portfolio);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(portfolio);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PortfolioDto> update(@RequestBody PortfolioDto portfolio) throws ValidationsException {
+    public ResponseEntity<PortfolioDto> update(@RequestBody PortfolioDto portfolio) throws ValidationsException, NotFoundException {
         portfolio = business.update(portfolio);
 
         return ResponseEntity.ok(portfolio);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
-        String mensagemAcao = business.delete(id);
-        return ResponseEntity.ok(mensagemAcao);
+    public ResponseEntity<String> delete(@PathVariable int id) throws NotFoundException {
+        business.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Deletado com sucesso!");
     }
 
 

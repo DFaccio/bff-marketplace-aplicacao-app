@@ -9,6 +9,7 @@ import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
 import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.PortfolioConversor;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
@@ -43,16 +44,16 @@ public class PortfolioBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public PortfolioDto insert(PortfolioDto dto) throws ValidationsException {
+    public PortfolioDto insert(PortfolioDto dto) throws ValidationsException,NotFoundException {
         Portfolio portfolio = conversor.converte(dto);
 
         Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaIdentificador(dto.getFornecedor().getInformacoes().getIdentificador());
 
-        if (fornecedor.isPresent()){
-            portfolio.setFornecedor(fornecedor.get());
-        } else {
-            throw new ValidationsException("Código do fornecedor não encontrado, não foi realizada a inclusão do portfólio.");
+        if (fornecedor.isEmpty()){
+            throw new NotFoundException(dto.getId(), "Fornecedor");
         }
+
+        portfolio.setFornecedor(fornecedor.get());
 
         Optional<Portfolio> portfolioCriado = repository.findPortfolioByFornecedorAndDescricao(portfolio.getFornecedor(), portfolio.getDescricao());
 
@@ -62,7 +63,7 @@ public class PortfolioBusiness {
 
         portfolio.setDataCriacao(LocalDateTime.now());
 
-        portfolio.getPortfolioProdutos().forEach(produto -> produto.setDataCriacao(LocalDateTime.now()));
+        portfolio.getProdutos().forEach(produto -> produto.setDataCriacao(LocalDateTime.now()));
         Portfolio portfolioSalvo = repository.save(portfolio);
 
         dto = conversor.converte(portfolioSalvo);
@@ -76,11 +77,11 @@ public class PortfolioBusiness {
         return conversor.converte(portfolio);
     }
 
-    public PortfolioDto update(PortfolioDto dto) throws ValidationsException {
+    public PortfolioDto update(PortfolioDto dto) throws NotFoundException {
         Optional<Portfolio> portfolio = repository.findPortfolioById(dto.getId());
 
         if (portfolio.isEmpty()) {
-            throw new ValidationsException("ID do portfolio informado não é válido, não é possível alterar!");
+            throw new NotFoundException(dto.getId(), "Portfolio");
         }
 
         Portfolio portfolioToUpdate = portfolio.get();
@@ -91,16 +92,13 @@ public class PortfolioBusiness {
         return conversor.converte(repository.save(portfolioToUpdate));
     }
 
-    public String delete(Integer IdPortifolio){
+    public void delete(Integer IdPortifolio) throws NotFoundException {
         Optional<Portfolio> portfolioDeletar = repository.findPortfolioById(IdPortifolio);
 
-
         if (portfolioDeletar.isEmpty()){
-            return "Código do portifólio não encontrado para excluir!";
+            throw new NotFoundException(IdPortifolio, "Portfolio");
         }
 
         repository.deleteById(IdPortifolio);
-
-        return "Portfólio deletado com sucesso!";
     }
 }

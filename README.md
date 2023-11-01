@@ -6,7 +6,14 @@ O processo tomado como base é a compra coletiva do Diário de um [Coffe Lover](
 
 O projeto consiste em fornecer um template web para a criação de grupos de compra, com um portfólio de cafés do fornecedor selecionado pelo administrador do grupo, e possibilitar a criação de pedidos de compra de forma controlada e com o acompanhamento atualizado de estoque e compradores interessados, com histórico das compras realizadas e confirmação de pagamento via anexo de comprovantes de transferência via PIX para uma conta específica.
 
-O projeto encontra-se em andamento. Neste primeiro momento, estaremos entregando MVP referente aos cadastros das entidades.
+O projeto encontra-se em andamento. Neste primeiro momento, estaremos entregando MVP com algumas operações CRUD conforme relação abaixo:
+* Pessoa (GET, POST, PUT)
+* Fornecedor (GET, POST)
+* Grupo de Compra (GET, POST, PUT)
+* Chave Pix (POST, PUT)
+* Portífolio (GET, POST, PUT, DELETE)
+* Produto (GET, POST, PUT, DELETE)
+* Usuário (POST, PUT, GET)
 
 Para um maior entendimento sobre o projeto, sinta-se livre para acessar nossa documentação usando o Notion [aqui](https://www.notion.so/8d23441e4ddc4bb88ab78d7b952595e7?v=ea155403c7cd4b568b812d0d50aee463&pvs=4).
 

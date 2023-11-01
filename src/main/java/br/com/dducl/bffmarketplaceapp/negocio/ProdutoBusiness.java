@@ -1,11 +1,15 @@
 package br.com.dducl.bffmarketplaceapp.negocio;
 
 import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
+import br.com.dducl.bffmarketplaceapp.modelo.entidades.Fornecedor;
 import br.com.dducl.bffmarketplaceapp.modelo.entidades.Produto;
+import br.com.dducl.bffmarketplaceapp.modelo.persistencia.FornecedorRepository;
 import br.com.dducl.bffmarketplaceapp.modelo.persistencia.ProdutoRepository;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
+import br.com.dducl.bffmarketplaceapp.util.conversores.FornecedorConversor;
 import br.com.dducl.bffmarketplaceapp.util.conversores.ProdutoConversor;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ProdutoBusiness {
@@ -24,7 +29,24 @@ public class ProdutoBusiness {
     @Resource
     private ProdutoRepository repository;
 
-    public ProdutoDto insert(ProdutoDto dto) {
+    @Resource
+    private FornecedorRepository fornecedorRepository;
+
+    @Resource
+    private FornecedorConversor fornecedorConversor;
+
+
+    public ProdutoDto insert(ProdutoDto dto) throws ValidationsException, NotFoundException {
+
+        Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaIdentificador(dto.getFornecedor().getInformacoes().getIdentificador());
+
+        if (fornecedor.isPresent()){
+            dto.setFornecedor(fornecedorConversor.converte(fornecedor.get()));
+        } else {
+            throw new ValidationsException("Código do fornecedor não encontrado, não foi realizada a inclusão do portfólio.");
+        }
+
+
         Produto produto = conversor.converte(dto);
 
         produto.setDataCriacao(LocalDateTime.now());

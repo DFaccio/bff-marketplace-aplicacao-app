@@ -4,6 +4,7 @@ import br.com.dducl.bffmarketplaceapp.dto.ProdutoDto;
 import br.com.dducl.bffmarketplaceapp.negocio.ProdutoBusiness;
 import br.com.dducl.bffmarketplaceapp.util.Pagination;
 import br.com.dducl.bffmarketplaceapp.util.ResultadoPaginado;
+import br.com.dducl.bffmarketplaceapp.util.exceptions.NotFoundException;
 import br.com.dducl.bffmarketplaceapp.util.exceptions.ValidationsException;
 
 import jakarta.annotation.Resource;
@@ -19,7 +20,7 @@ public class ProdutoController {
     private ProdutoBusiness business;
 
     @GetMapping
-    public ResponseEntity<ResultadoPaginado<ProdutoDto>> findAll(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer initialPage) {
+    public ResponseEntity<ResultadoPaginado<ProdutoDto>> findAll(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer initialPage){
 
         Pagination page = new Pagination(initialPage, pageSize);
 
@@ -32,7 +33,7 @@ public class ProdutoController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) {
+    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto)  throws ValidationsException, NotFoundException {
         produto = business.insert(produto);
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);

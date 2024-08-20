@@ -6,6 +6,7 @@ import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ public class PessoaController {
     private PessoaBusiness business;
 
     @GetMapping
+    @Operation(description = "Recuperar pessoas")
     public ResponseEntity<ResultadoPaginado<PessoaDto>> findAll(@RequestParam(required = false) Integer pageSize,
                                                                 @RequestParam(required = false) Integer initialPage) {
 
@@ -31,6 +33,7 @@ public class PessoaController {
     }
 
     @PostMapping("/new")
+    @Operation(description = "Cadastrar pessoa")
     public ResponseEntity<PessoaDto> insert(@Valid @RequestBody PessoaDto pessoa) throws ValidationsException {
         PessoaDto dto = business.insert(pessoa);
 
@@ -38,6 +41,7 @@ public class PessoaController {
     }
 
     @PutMapping("/update")
+    @Operation(description = "Atualizar cadastro de pessoa")
     public ResponseEntity<PessoaDto> update(@Valid @RequestBody PessoaDto pessoa) throws ValidationsException {
         PessoaDto dto = business.update(pessoa);
 
@@ -45,6 +49,7 @@ public class PessoaController {
     }
 
     @GetMapping(value = "/identificador/{identificador}")
+    @Operation(description = "Buscar pessoa por documento")
     public ResponseEntity<PessoaDto> findByIdentificador(@PathVariable String identificador) throws NotFoundException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }

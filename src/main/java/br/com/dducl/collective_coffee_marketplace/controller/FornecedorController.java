@@ -6,6 +6,7 @@ import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ public class FornecedorController {
     private FornecedorBusiness business;
 
     @GetMapping
+    @Operation(description = "Recuperar os fornecedores")
     public ResponseEntity<ResultadoPaginado<FornecedorDto>> findAll(@RequestParam(required = false) Integer pageSize,
                                                                     @RequestParam(required = false) Integer initialPage) {
 
@@ -31,18 +33,20 @@ public class FornecedorController {
     }
 
     @GetMapping(value = "/{id}")
+    @Operation(description = "Recuperar fornecedor por id")
     public ResponseEntity<FornecedorDto> findById(@PathVariable Integer id) throws NotFoundException {
         return ResponseEntity.ok(business.findById(id));
     }
 
     @PostMapping("/new")
-
+    @Operation(description = "Cadastrar fornecedor")
     public ResponseEntity<FornecedorDto> insert(@Valid @RequestBody FornecedorDto fornecedor) throws ValidationsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(business.insert(fornecedor));
 
     }
 
     @GetMapping(value = "/identificador/{identificador}")
+    @Operation(description = "Recuperar fornecedor por documento")
     public ResponseEntity<FornecedorDto> findByIdentificador(@PathVariable String identificador) throws NotFoundException {
         return ResponseEntity.ok(business.findByIdentificador(identificador));
     }

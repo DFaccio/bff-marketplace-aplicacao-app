@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Table(name = "chaves_pix")
 public class ChavesPix implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -26,7 +28,6 @@ public class ChavesPix implements Serializable {
     @Column
     private boolean ativo;
 
-    @Column
-    @Temporal(TemporalType.DATE)
+    @Temporal(value = TemporalType.DATE)
     private LocalDate dataCadastro;
 }

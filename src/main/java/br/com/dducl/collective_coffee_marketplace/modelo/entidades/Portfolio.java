@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "portfolio")
 public class Portfolio implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1;
 
@@ -31,15 +32,15 @@ public class Portfolio implements Serializable {
     private String descricao;
 
     @ManyToMany
-    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "idPortfolio"), inverseJoinColumns = @JoinColumn(name = "idProduto"))
+    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
     private List<Produto> produtos;
 
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataCriacao;
 
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataVigencia;
 
     @Column

@@ -45,9 +45,7 @@ public class SenhaUsuario implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof SenhaUsuario)) return false;
-
-        SenhaUsuario that = (SenhaUsuario) o;
+        if (!(o instanceof SenhaUsuario that)) return false;
 
         return senha.equals(that.senha);
     }

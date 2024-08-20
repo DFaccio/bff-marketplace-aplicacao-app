@@ -39,7 +39,7 @@ public class PessoaBusiness {
     public PessoaDto insert(PessoaDto dto) throws ValidationsException {
         Pessoa pessoa = conversor.converte(dto);
 
-        Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getIdentificador());
+        Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getDocumento());
 
         if (jaCriada.isPresent()) {
             throw new ValidationsException("Pessoa j\u00E1 cadastrada!!");

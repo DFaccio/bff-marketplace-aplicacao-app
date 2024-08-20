@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Table(name = "endereco")
 public class Endereco implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id

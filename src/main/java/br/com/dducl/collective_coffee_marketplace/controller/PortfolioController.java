@@ -6,6 +6,7 @@ import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class PortfolioController {
     private PortfolioBusiness business;
 
     @GetMapping
+    @Operation(description = "Recuperar itens de venda")
     public ResponseEntity<ResultadoPaginado<PortfolioDto>> findAll(@RequestParam(required = false) Integer pageSize,
                                                                    @RequestParam(required = false) Integer initialPage) {
 
@@ -30,6 +32,7 @@ public class PortfolioController {
     }
 
     @PostMapping("/new")
+    @Operation(description = "Adicionar itens de venda")
     public ResponseEntity<PortfolioDto> insert(@RequestBody PortfolioDto portfolio) throws ValidationsException, NotFoundException {
         portfolio = business.insert(portfolio);
 
@@ -44,6 +47,7 @@ public class PortfolioController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Operation(description = "Deletar o portifólio")
     public ResponseEntity<String> delete(@PathVariable int id) throws NotFoundException {
         business.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Deletado com sucesso!");

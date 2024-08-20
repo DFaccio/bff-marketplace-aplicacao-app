@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Table(name = "grupocompra")
 public class GrupoCompra implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -21,8 +23,7 @@ public class GrupoCompra implements Serializable {
     @Column
     private Integer id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataCriacao;
 
     @Column
@@ -32,7 +33,7 @@ public class GrupoCompra implements Serializable {
     private boolean ativo;
 
     @ManyToMany
-    @JoinTable(name = "membros_grupo_compra", joinColumns = @JoinColumn(name = "grupocompra_id"), inverseJoinColumns = @JoinColumn(name = "pessoa_id"))
+    @JoinTable(name = "membros_grupo_compra", joinColumns = @JoinColumn(name = "grupocompra_id"), inverseJoinColumns = @JoinColumn(name = "pessoa_documento"))
     private List<Pessoa> pessoas;
 
 }

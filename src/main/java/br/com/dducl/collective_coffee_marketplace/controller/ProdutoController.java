@@ -7,6 +7,7 @@ import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +23,7 @@ public class ProdutoController {
     private ProdutoBusiness business;
 
     @GetMapping
+    @Operation(description = "Recuperar produtos")
     public ResponseEntity<ResultadoPaginado<ProdutoDto>> findAll(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer initialPage) {
 
         Pagination page = new Pagination(initialPage, pageSize);
@@ -30,11 +32,13 @@ public class ProdutoController {
     }
 
     @GetMapping(value = "/id/{id}")
+    @Operation(description = "Recuperar o produto por identificador")
     public ResponseEntity<ProdutoDto> findProdutoById(@PathVariable int id) {
         return ResponseEntity.ok(business.findProdutoById(id));
     }
 
     @PostMapping("/new")
+    @Operation(description = "Cadastrar produto")
     public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws NotFoundException, ValidationsException {
         produto = business.insert(produto);
 
@@ -42,6 +46,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/update")
+    @Operation(description = "Atualizar produto")
     public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidationsException {
         produto = business.update(produto);
 
@@ -49,6 +54,7 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Operation(description = "Deletar produto")
     public ResponseEntity<ProdutoDto> delete(@PathVariable int id) {
         ProdutoDto produto = business.delete(business.findProdutoById(id));
 

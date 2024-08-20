@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Setter
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Table(name = "fornecedor")
 public class Fornecedor implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -20,7 +22,7 @@ public class Fornecedor implements Serializable {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "pessoa_identificador")
+    @JoinColumn(name = "pessoa_documento")
     private Pessoa pessoa;
 
     @Column(name = "razao_social")

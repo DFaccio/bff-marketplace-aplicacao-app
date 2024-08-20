@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Produto implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Id
@@ -37,6 +39,7 @@ public class Produto implements Serializable {
     private boolean disponivel;
 
     @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataCriacao;
 
     @ManyToOne

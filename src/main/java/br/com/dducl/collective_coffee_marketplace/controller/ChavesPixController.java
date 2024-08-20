@@ -4,6 +4,7 @@ import br.com.dducl.collective_coffee_marketplace.dto.ChavesPixDto;
 import br.com.dducl.collective_coffee_marketplace.negocio.ChavePixBusiness;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -19,6 +20,7 @@ public class ChavesPixController {
     private ChavePixBusiness chavePixBusiness;
 
     @PostMapping(value = "/new")
+    @Operation(description = "Cadastrar nova chave")
     public ResponseEntity<Void> insert(@Valid @RequestBody ChavesPixDto chavesPixDto, @RequestParam String identificador) throws NotFoundException, ValidationsException, NoSuchFieldException {
         chavePixBusiness.insert(identificador, chavesPixDto);
 
@@ -26,6 +28,7 @@ public class ChavesPixController {
     }
 
     @PutMapping(value = "/pessoa/{identificador}")
+    @Operation(description = "Atualizar chave")
     public ResponseEntity<Void> update(@Valid @RequestBody ChavesPixDto chavesPixDto, @PathVariable String identificador, @RequestParam String chave) throws ValidationsException {
         chavePixBusiness.update(chave, chavesPixDto, identificador);
 

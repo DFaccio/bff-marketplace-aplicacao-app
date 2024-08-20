@@ -28,7 +28,7 @@ public class PessoaConversor implements Conversores<Pessoa, PessoaDto> {
         dto.setAtivo(entidade.isAtivo());
         dto.setDataCadastro(entidade.getDataCadastro().toString());
         dto.setEmail(entidade.getEmail());
-        dto.setIdentificador(entidade.getIdentificador());
+        dto.setIdentificador(entidade.getDocumento());
         dto.setTelefone(entidade.getTelefone());
 
         if (entidade.getEndereco() != null) {
@@ -47,7 +47,7 @@ public class PessoaConversor implements Conversores<Pessoa, PessoaDto> {
 
         pessoa.setAtivo(dto.isAtivo());
         pessoa.setEmail(dto.getEmail());
-        pessoa.setIdentificador(dto.getIdentificador());
+        pessoa.setDocumento(dto.getIdentificador());
         pessoa.setNome(dto.getNome());
         pessoa.setTelefone(dto.getTelefone());
 

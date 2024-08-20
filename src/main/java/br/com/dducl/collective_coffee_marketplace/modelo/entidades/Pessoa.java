@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,13 +16,14 @@ import java.util.Objects;
 @Table(name = "pessoa")
 public class Pessoa implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     @Column
     private String nome;
 
     @Id
-    private String identificador;
+    private String documento;
 
     @Column
     private String email;
@@ -29,7 +31,7 @@ public class Pessoa implements Serializable {
     @Column
     private String telefone;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataCadastro;
 
     @Column
@@ -40,7 +42,7 @@ public class Pessoa implements Serializable {
     private Usuario usuario;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "pessoa_chave", joinColumns = @JoinColumn(name = "pessoa_id"), inverseJoinColumns = @JoinColumn(name = "chaves_pix"))
+    @JoinTable(name = "pessoa_chave", joinColumns = @JoinColumn(name = "pessoa_documento"), inverseJoinColumns = @JoinColumn(name = "chaves_pix"))
     private List<ChavesPix> chaves;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -54,11 +56,11 @@ public class Pessoa implements Serializable {
 
         Pessoa pessoa = (Pessoa) o;
 
-        return identificador.equals(pessoa.identificador);
+        return documento.equals(pessoa.documento);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identificador);
+        return Objects.hash(documento);
     }
 }

@@ -1,15 +1,17 @@
 package br.com.dducl.collective_coffee_marketplace.negocio;
 
 import br.com.dducl.collective_coffee_marketplace.dto.FornecedorDto;
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
+import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.FornecedorRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.FornecedorConversor;
+import br.com.dducl.collective_coffee_marketplace.util.enums.Perfil;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,56 +23,120 @@ import java.util.Optional;
 @Service
 public class FornecedorBusiness {
 
-    @Resource
-    private FornecedorRepository repository;
+    private final FornecedorRepository repository;
 
-    @Resource
-    private FornecedorConversor conversor;
+    private final FornecedorConversor conversor;
 
-    @Resource
-    private PessoaBusiness pessoaBusiness;
+    private final PessoaRepository pessoaRepository;
+
+    public FornecedorBusiness(FornecedorRepository repository, FornecedorConversor conversor, PessoaRepository pessoaRepository) {
+        this.repository = repository;
+        this.conversor = conversor;
+        this.pessoaRepository = pessoaRepository;
+    }
 
     public ResultadoPaginado<FornecedorDto> findAll(Pagination page) {
-        Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("id"));
+        Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("pessoa.nome"));
 
         Page<Fornecedor> pagina = repository.findAll(pageable);
 
         return conversor.converteEntidades(pagina);
     }
 
-    public FornecedorDto findById(Integer id) throws NotFoundException {
-        Optional<Fornecedor> fornecedor = repository.findById(id);
+    public FornecedorDto insert(PessoaInfoDto pessoaInfoDto) throws ValidationsException {
+        Optional<Fornecedor> optionalFornecedor = repository.findFornecedorByPessoaDocumento(pessoaInfoDto.getDocumento());
 
-        if (fornecedor.isEmpty()) {
-            throw new NotFoundException(id, "Fornecedor");
+        if (optionalFornecedor.isPresent()) {
+            throw new ValidationsException("FORNECEDOR_JA_CADASTRADO");
         }
 
-        return conversor.converte(fornecedor.get());
+        Fornecedor fornecedor = validateAndInsertPessoa(pessoaInfoDto);
+
+        fornecedor = repository.save(fornecedor);
+
+        return conversor.converte(fornecedor);
     }
 
-    public FornecedorDto insert(FornecedorDto dto) throws ValidationsException {
-        Optional<Fornecedor> optional = repository.findFornecedorByPessoaIdentificador(dto.getInformacoes().getIdentificador());
+    private Fornecedor validateAndInsertPessoa(PessoaInfoDto fornecedorDto) throws ValidationsException {
+        validaAndNormalizaDocumento(fornecedorDto);
 
-        if (optional.isPresent()) {
-            throw new ValidationsException("Fornecedor j\u00E1 cadastrado!");
+        Fornecedor fornecedor = conversor.converte(fornecedorDto);
+        Optional<Pessoa> optionalPessoa = pessoaRepository.findPessoaByDocumentoEquals(fornecedorDto.getDocumento());
+
+        if (optionalPessoa.isPresent()) {
+            fornecedor.setPessoa(optionalPessoa.get());
+        } else {
+            fornecedor.setPessoa(pessoaRepository.insert(fornecedor.getPessoa()));
         }
 
-        PessoaDto pessoa = pessoaBusiness.insert(dto.getInformacoes());
-
-        dto.setInformacoes(pessoa);
-
-        Fornecedor fornecedor = conversor.converte(dto);
-
-        return conversor.converte(repository.save(fornecedor));
+        return fornecedor;
     }
 
-    public FornecedorDto findByIdentificador(String identificador) throws NotFoundException {
-        Optional<Fornecedor> fornecedor = repository.findFornecedorByPessoaIdentificador(identificador);
+    private void validaAndNormalizaDocumento(PessoaInfoDto pessoa) throws ValidationsException {
+        String documento = pessoa.getDocumento().replaceAll("\\D", "");
 
-        if (fornecedor.isEmpty()) {
-            throw new NotFoundException(identificador, "Fornecedor");
+        if (documento.isBlank() || (documento.length() != 11 && documento.length() != 14)) {
+            throw new ValidationsException("DOCUMENTO_INVALIDO");
+        }
+    }
+
+    public FornecedorDto updateToVendor(String documento, String razaoSocial) throws ValidationsException, NotFoundException {
+        Optional<Fornecedor> optionalFornecedor = repository.findFornecedorByPessoaDocumento(documento);
+
+        if (optionalFornecedor.isPresent()) {
+            throw new ValidationsException("FORNECEDOR_JA_CADASTRADO");
         }
 
-        return conversor.converte(fornecedor.get());
+        Optional<Pessoa> optionalPessoa = pessoaRepository.findPessoaByDocumentoEquals(documento);
+
+        if (optionalPessoa.isEmpty()) {
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+        }
+
+        validarRazaoSocial(razaoSocial);
+
+        Fornecedor fornecedor = Fornecedor.builder()
+                .pessoa(optionalPessoa.get())
+                .razaoSocial(razaoSocial)
+                .build();
+
+        fornecedor.getPessoa().setPerfil(Perfil.FORNECEDOR);
+
+        fornecedor = repository.save(fornecedor);
+
+        return conversor.converte(fornecedor);
+    }
+
+    private static void validarRazaoSocial(String razaoSocial) throws ValidationsException {
+        if (razaoSocial == null || razaoSocial.isBlank()) {
+            throw new ValidationsException("RAZAO_SOCIAL_OBRIGATORIA");
+        }
+    }
+
+    public FornecedorDto findFornecedorByDocumento(String documento) throws NotFoundException {
+        Optional<Fornecedor> optional = repository.findFornecedorByPessoaDocumento(documento);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+        }
+
+        return conversor.converte(optional.get());
+    }
+
+    public FornecedorDto updateRazaoSocial(String documento, String razao) throws NotFoundException, ValidationsException {
+        validarRazaoSocial(razao);
+
+        Optional<Fornecedor> optional = repository.findFornecedorByPessoaDocumento(documento);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+        }
+
+        Fornecedor fornecedor = optional.get();
+        fornecedor.setRazaoSocial(razao);
+
+        fornecedor = repository.save(fornecedor);
+
+        return conversor.converte(fornecedor);
     }
 }

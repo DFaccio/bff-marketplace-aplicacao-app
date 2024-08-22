@@ -1,6 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.dto;
 
-import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaPerfilDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FornecedorDto extends PessoaDto {
+public class FornecedorCadastro extends PessoaPerfilDto {
 
     @NotBlank(message = "Razão Social é um campo obrigatório")
     private String razaoSocial;

@@ -7,7 +7,7 @@ import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.SenhaUsuario;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Usuario;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.FornecedorRepository;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.PessoaRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.UsuarioRepository;
 import br.com.dducl.collective_coffee_marketplace.util.PasswordUtils;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.UsuarioConversor;
@@ -46,13 +46,13 @@ public class UsuarioBusiness {
 
         usuario = usuarioRepository.save(usuario);
 
-        Pessoa pessoa = pessoaRepository.findPessoaByIdentificadorEquals(dto.getPessoaId()).get();
+        Pessoa pessoa = pessoaRepository.findPessoaByDocumentoEquals(dto.getPessoaId()).get();
 
-        pessoa.setUsuario(usuario);
+        /*pessoa.setUsuario(usuario);*/
     }
 
     private void validaUsuarioInserir(UsuarioCadastroDto dto) throws ValidationsException {
-        Optional<Pessoa> pessoa = pessoaRepository.findPessoaByIdentificadorEquals(dto.getPessoaId());
+        Optional<Pessoa> pessoa = pessoaRepository.findPessoaByDocumentoEquals(dto.getPessoaId());
 
         if (pessoa.isEmpty()) {
             throw new ValidationsException(String.format("N\u00E3o foi encontrado cadastro com identificador %s", dto.getPessoaId()));
@@ -65,7 +65,7 @@ public class UsuarioBusiness {
 
     private void validaTipoPerfil(String identificador, Perfil perfil) throws ValidationsException {
         if (Perfil.FORNECEDOR.equals(perfil)) {
-            Optional<Fornecedor> optional = fornecedorRepository.findFornecedorByPessoaIdentificador(identificador);
+            Optional<Fornecedor> optional = fornecedorRepository.findFornecedorByPessoaDocumento(identificador);
 
             if (optional.isEmpty()) {
                 throw new ValidationsException("Para perfil de fornecedor, o identificar deve ser de um fornecedor!");

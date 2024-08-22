@@ -2,7 +2,7 @@ package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
 import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraCadastroUpdateDto;
 import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraFullDto;
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.GrupoCompra;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
@@ -29,7 +29,7 @@ public class GrupoCompraConversor implements Conversores<GrupoCompra, GrupoCompr
             grupoCompraDto.setDataCriacao(entidade.getDataCriacao().toString());
         }
 
-        grupoCompraDto.setPessoas(pessoaConversor.converteEntidades(entidade.getPessoas()));
+       /* grupoCompraDto.setPessoas(pessoaConversor.converteEntidades(entidade.getPessoas()));*/
 
         return grupoCompraDto;
     }
@@ -38,7 +38,7 @@ public class GrupoCompraConversor implements Conversores<GrupoCompra, GrupoCompr
     public GrupoCompra converte(GrupoCompraFullDto dto) throws ValidationsException {
         GrupoCompra entidade = getGrupoCompra(dto.isAtivo(), dto.getNome(), dto.getId(), dto.getDataCriacao());
 
-        entidade.setPessoas(pessoaConversor.converteDto(dto.getPessoas()));
+        /*entidade.setPessoas(pessoaConversor.converteDto(dto.getPessoas()));*/
 
         return entidade;
     }
@@ -59,7 +59,7 @@ public class GrupoCompraConversor implements Conversores<GrupoCompra, GrupoCompr
     public GrupoCompra converte(List<PessoaDto> pessoas, GrupoCompraCadastroUpdateDto dto) {
         GrupoCompra entidade = getGrupoCompra(dto.isAtivo(), dto.getNome(), dto.getId(), dto.getDataCriacao());
 
-        entidade.setPessoas(pessoaConversor.converteDto(pessoas));
+        /*entidade.setPessoas(pessoaConversor.converteDto(pessoas));*/
 
         return entidade;
     }

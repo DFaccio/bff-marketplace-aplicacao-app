@@ -2,7 +2,7 @@ package br.com.dducl.collective_coffee_marketplace.negocio;
 
 import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraCadastroUpdateDto;
 import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraFullDto;
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.GrupoCompra;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.GrupoCompraRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
@@ -45,9 +45,9 @@ public class GrupoCompraBusiness {
     private List<PessoaDto> getPessoas(List<String> identificadores) throws NotFoundException {
         List<PessoaDto> pessoas = new ArrayList<>();
 
-        for (String identificador : identificadores) {
+        /*for (String identificador : identificadores) {
             pessoas.add(pessoaBusiness.findByIdentificador(identificador));
-        }
+        }*/
 
         return pessoas;
     }

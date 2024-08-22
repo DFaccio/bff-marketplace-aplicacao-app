@@ -7,7 +7,6 @@ import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.Fornecedor
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.PortfolioRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
-import br.com.dducl.collective_coffee_marketplace.util.conversores.FornecedorConversor;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.PortfolioConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
@@ -33,8 +32,8 @@ public class PortfolioBusiness {
     @Resource
     private FornecedorRepository fornecedorRepository;
 
-    @Resource
-    private FornecedorConversor fornecedorConversor;
+    /*@Resource
+    private FornecedorConversor fornecedorConversor;*/
 
     public ResultadoPaginado<PortfolioDto> findAll(Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("descricao"));
@@ -44,12 +43,12 @@ public class PortfolioBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public PortfolioDto insert(PortfolioDto dto) throws ValidationsException,NotFoundException {
+    public PortfolioDto insert(PortfolioDto dto) throws ValidationsException, NotFoundException {
         Portfolio portfolio = conversor.converte(dto);
 
-        Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaIdentificador(dto.getFornecedor().getInformacoes().getIdentificador());
+       /* Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaDocumento(dto.getFornecedor().getInformacoes().getIdentificador());
 
-        if (fornecedor.isEmpty()){
+        if (fornecedor.isEmpty()) {
             throw new NotFoundException(dto.getId(), "Fornecedor");
         }
 
@@ -67,9 +66,9 @@ public class PortfolioBusiness {
         Portfolio portfolioSalvo = repository.save(portfolio);
 
         dto = conversor.converte(portfolioSalvo);
-        dto.setFornecedor( fornecedorConversor.converte(portfolio.getFornecedor()));
+        *//*dto.setFornecedor(fornecedorConversor.converte(portfolio.getFornecedor()));*//*
 
-        return dto;
+*/        return dto;
     }
 
     public PortfolioDto findPortfolioById(int id) {
@@ -95,7 +94,7 @@ public class PortfolioBusiness {
     public void delete(Integer IdPortifolio) throws NotFoundException {
         Optional<Portfolio> portfolioDeletar = repository.findPortfolioById(IdPortifolio);
 
-        if (portfolioDeletar.isEmpty()){
+        if (portfolioDeletar.isEmpty()) {
             throw new NotFoundException(IdPortifolio, "Portfolio");
         }
 

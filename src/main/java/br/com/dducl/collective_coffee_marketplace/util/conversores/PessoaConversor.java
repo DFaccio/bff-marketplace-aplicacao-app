@@ -1,15 +1,11 @@
 package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
-import br.com.dducl.collective_coffee_marketplace.dto.ChavesPixDto;
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
-import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ChavesPix;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 public class PessoaConversor implements Conversores<Pessoa, PessoaDto> {
@@ -22,46 +18,45 @@ public class PessoaConversor implements Conversores<Pessoa, PessoaDto> {
 
     @Override
     public PessoaDto converte(Pessoa entidade) {
-        PessoaDto dto = new PessoaDto();
-
-        dto.setNome(entidade.getNome());
-        dto.setAtivo(entidade.isAtivo());
-        dto.setDataCadastro(entidade.getDataCadastro().toString());
-        dto.setEmail(entidade.getEmail());
-        dto.setIdentificador(entidade.getDocumento());
-        dto.setTelefone(entidade.getTelefone());
-
-        if (entidade.getEndereco() != null) {
-            dto.setEndereco(enderecoConversor.converte(entidade.getEndereco()));
-        }
-
-        List<ChavesPixDto> chaves = chavePixConversor.converteEntidades(entidade.getChaves());
-        dto.setChavesPix(chaves);
-
-        return dto;
+        return PessoaDto.builder()
+                .nome(entidade.getNome())
+                .ativo(entidade.isAtivo())
+                .dataCadastro(entidade.getDataCadastro().toString())
+                .email(entidade.getEmail())
+                .documento(entidade.getDocumento())
+                .telefone(entidade.getTelefone())
+                .endereco(entidade.getEndereco() == null ? null : enderecoConversor.converte(entidade.getEndereco()))
+                .perfil(entidade.getPerfil())
+                .chavesPix(chavePixConversor.converteEntidades(entidade.getChaves()))
+                .build();
     }
 
     @Override
     public Pessoa converte(PessoaDto dto) throws ValidationsException {
-        Pessoa pessoa = new Pessoa();
-
-        pessoa.setAtivo(dto.isAtivo());
-        pessoa.setEmail(dto.getEmail());
-        pessoa.setDocumento(dto.getIdentificador());
-        pessoa.setNome(dto.getNome());
-        pessoa.setTelefone(dto.getTelefone());
-
-        if (dto.getDataCadastro() != null) {
-            pessoa.setDataCadastro(LocalDateTime.parse(dto.getDataCadastro()));
-        }
-        if (dto.getEndereco() != null) {
-            pessoa.setEndereco(enderecoConversor.converte(dto.getEndereco()));
-        }
-
-        List<ChavesPix> chavesPixes = chavePixConversor.converteDto(dto.getChavesPix());
-        pessoa.setChaves(chavesPixes);
-
-        return pessoa;
+        return Pessoa.builder()
+                .nome(dto.getNome())
+                .ativo(dto.isAtivo())
+                .email(dto.getEmail())
+                .documento(dto.getDocumento())
+                .telefone(dto.getTelefone())
+                .endereco(dto.getEndereco() == null ? null : enderecoConversor.converte(dto.getEndereco()))
+                .chaves(chavePixConversor.converteDto(dto.getChavesPix()))
+                .perfil(dto.getPerfil())
+                .build();
     }
 
+    public Pessoa converte(PessoaInfoDto dto) throws ValidationsException {
+        return Pessoa.builder()
+                .nome(dto.getNome())
+                .ativo(dto.isAtivo())
+                .email(dto.getEmail())
+                .documento(dto.getDocumento())
+                .telefone(dto.getTelefone())
+                .chaves(chavePixConversor.converteDto(dto.getChavesPix()))
+                .endereco(dto.getEndereco() == null ?
+                        null :
+                        enderecoConversor.converte(dto.getEndereco()))
+                .perfil(dto.getPerfil())
+                .build();
+    }
 }

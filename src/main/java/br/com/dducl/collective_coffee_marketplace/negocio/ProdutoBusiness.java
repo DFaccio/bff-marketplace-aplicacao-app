@@ -7,7 +7,6 @@ import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.Fornecedor
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
-import br.com.dducl.collective_coffee_marketplace.util.conversores.FornecedorConversor;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.ProdutoConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -32,18 +32,18 @@ public class ProdutoBusiness {
     @Resource
     private FornecedorRepository fornecedorRepository;
 
-    @Resource
-    private FornecedorConversor fornecedorConversor;
+   /* @Resource
+    private FornecedorConversor fornecedorConversor;*/
 
     public ProdutoDto insert(ProdutoDto dto) throws NotFoundException, ValidationsException {
 
-        Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaIdentificador(dto.getFornecedor().getInformacoes().getIdentificador());
+       /* Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaDocumento(dto.getFornecedor().getInformacoes().getIdentificador());
 
-        if (fornecedor.isEmpty()){
+        if (fornecedor.isEmpty()) {
             throw new NotFoundException(dto.getId(), "Fornecedor");
         }
-
-        dto.setFornecedor(fornecedorConversor.converte(fornecedor.get()));
+*/
+        /* dto.setFornecedor(fornecedorConversor.converte(fornecedor.get()));*/
 
         Produto produto = conversor.converte(dto);
 
@@ -91,7 +91,7 @@ public class ProdutoBusiness {
 
     }
 
-    public ProdutoDto delete(ProdutoDto dto){
+    public ProdutoDto delete(ProdutoDto dto) {
         var produto = (repository.getReferenceById(dto.getId()));
         Produto atualizar = produto;
 

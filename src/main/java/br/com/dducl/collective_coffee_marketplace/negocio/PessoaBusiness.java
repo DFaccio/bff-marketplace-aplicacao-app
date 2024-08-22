@@ -1,94 +1,107 @@
 package br.com.dducl.collective_coffee_marketplace.negocio;
 
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.EnderecoDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.PessoaRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.PessoaConversor;
+import br.com.dducl.collective_coffee_marketplace.util.enums.Perfil;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class PessoaBusiness {
 
-    @Resource
-    private PessoaConversor conversor;
+    private final PessoaConversor conversor;
 
-    @Resource
-    private PessoaRepository repository;
+    private final PessoaRepository repository;
 
-    public ResultadoPaginado<PessoaDto> findAll(Pagination page) {
-        Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("identificador"));
+    public PessoaBusiness(PessoaConversor conversor, PessoaRepository repository) {
+        this.conversor = conversor;
+        this.repository = repository;
+    }
 
-        Page<Pessoa> pagina = repository.findAll(pageable);
+    public ResultadoPaginado<PessoaDto> findAll(Perfil perfil, Pagination page) {
+        Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("documento"));
+
+        Page<Pessoa> pagina = repository.findAllByPerfilEquals(perfil, pageable);
 
         return conversor.converteEntidades(pagina);
     }
 
-    public PessoaDto insert(PessoaDto dto) throws ValidationsException {
-        Pessoa pessoa = conversor.converte(dto);
-
-        Optional<Pessoa> jaCriada = repository.findPessoaByIdentificadorEquals(pessoa.getDocumento());
-
-        if (jaCriada.isPresent()) {
-            throw new ValidationsException("Pessoa j\u00E1 cadastrada!!");
-        }
-
-        pessoa.getChaves().forEach(chave -> {
-            chave.setDataCadastro(LocalDate.now());
-            chave.setId(null);
-        });
-
-        pessoa.setDataCadastro(LocalDateTime.now());
-
-        pessoa = repository.save(pessoa);
-
-        return conversor.converte(pessoa);
-    }
-
-    public PessoaDto findByIdentificador(String identificador) throws NotFoundException {
-        Optional<Pessoa> pessoa = repository.findPessoaByIdentificadorEquals(identificador);
+    public PessoaDto findByIdentificador(Perfil perfil, String identificador) throws NotFoundException {
+        Optional<Pessoa> pessoa = repository.findPessoaByDocumentoAndPerfil(identificador, perfil);
 
         if (pessoa.isEmpty()) {
-            throw new NotFoundException(identificador, "Pessoa");
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
         }
 
         return conversor.converte(pessoa.get());
     }
 
-    public PessoaDto update(PessoaDto dto) throws ValidationsException {
-        Optional<Pessoa> optional = repository.findPessoaByIdentificadorEquals(dto.getIdentificador());
+    public PessoaDto insert(PessoaInfoDto pessoaInfoDto) throws ValidationsException {
+        validaAndNormalizaDocumento(pessoaInfoDto);
 
-        if (optional.isEmpty()) {
-            throw new ValidationsException("Pessoa informada para atualiza\u00E7\u00E3o n\u00E3o foi encontrada!");
+        Optional<Pessoa> optional = repository.findPessoaByDocumentoEquals(pessoaInfoDto.getDocumento());
+
+        if (optional.isPresent()) {
+            throw new ValidationsException("PESSOA_JA_CADASTRADA");
         }
 
-        Pessoa atualizar = optional.get();
+        Pessoa pessoa = conversor.converte(pessoaInfoDto);
 
-        Pessoa pessoa = conversor.converte(dto);
-
-        atualizar.setTelefone(pessoa.getTelefone());
-        atualizar.setEmail(pessoa.getEmail());
-        atualizar.setAtivo(pessoa.isAtivo());
-        atualizar.setNome(pessoa.getNome());
-
-        if (pessoa.getEndereco() != null) {
-            atualizar.setEndereco(pessoa.getEndereco());
-        }
-
-        pessoa = repository.save(atualizar);
+        pessoa = repository.insert(pessoa);
 
         return conversor.converte(pessoa);
+    }
+
+    private void validaAndNormalizaDocumento(PessoaInfoDto pessoa) throws ValidationsException {
+        String documento = pessoa.getDocumento().replaceAll("\\D", "");
+
+        if (documento.isBlank() || (documento.length() != 11 && documento.length() != 14)) {
+            throw new ValidationsException("DOCUMENTO_INVALIDO");
+        }
+    }
+
+    public PessoaDto update(String documento, PessoaDto pessoa) throws NotFoundException, ValidationsException {
+        Optional<Pessoa> optional = repository.findPessoaByDocumentoEquals(documento);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+        }
+
+        Pessoa toUpdate = optional.get();
+
+        toUpdate.setAtivo(pessoa.isAtivo());
+        toUpdate.setNome(pessoa.getNome());
+        toUpdate.setEmail(pessoa.getEmail());
+        toUpdate.setTelefone(pessoa.getTelefone());
+
+        updateEndereco(toUpdate, pessoa.getEndereco());
+
+        toUpdate = repository.save(toUpdate);
+
+        return conversor.converte(toUpdate);
+    }
+
+    private void updateEndereco(Pessoa saved, EnderecoDto enderecoDto) {
+        saved.getEndereco().setApelido(enderecoDto.getApelido());
+        saved.getEndereco().setLogradouro(enderecoDto.getLogradouro());
+        saved.getEndereco().setNumero(enderecoDto.getNumero());
+        saved.getEndereco().setBairro(enderecoDto.getBairro());
+        saved.getEndereco().setCidade(enderecoDto.getCidade());
+        saved.getEndereco().setEstado(enderecoDto.getBairro());
+        saved.getEndereco().setComplemento(enderecoDto.getComplemento());
+        saved.getEndereco().setCep(enderecoDto.getCep());
     }
 }

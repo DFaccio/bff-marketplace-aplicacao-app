@@ -4,7 +4,7 @@ import br.com.dducl.collective_coffee_marketplace.dto.ChavesPixDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ChavesPix;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ChavesPixRepository;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.PessoaRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.ChavePixConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
@@ -28,7 +28,7 @@ public class ChavePixBusiness {
     private ChavePixConversor conversor;
 
     public void insert(String identificador, ChavesPixDto chavesPixDto) throws NotFoundException, ValidationsException, NoSuchFieldException {
-        Optional<Pessoa> optional = pessoaRepository.findPessoaByIdentificadorEquals(identificador);
+        Optional<Pessoa> optional = pessoaRepository.findPessoaByDocumentoEquals(identificador);
 
         if (optional.isEmpty()) {
             throw new NotFoundException(identificador, "Pessoa");
@@ -55,7 +55,7 @@ public class ChavePixBusiness {
     }
 
     public void update(String chave, ChavesPixDto chavesPixDto, String identificador) throws ValidationsException {
-        Optional<Pessoa> optional = pessoaRepository.findPessoaByIdentificadorEqualsAndChaves_Chave(identificador, chave);
+        Optional<Pessoa> optional = pessoaRepository.findPessoaByDocumentoEqualsAndChaves_Chave(identificador, chave);
 
         if (optional.isEmpty()) {
             throw new ValidationsException(String.format("%s chave não encontrada!", chave));

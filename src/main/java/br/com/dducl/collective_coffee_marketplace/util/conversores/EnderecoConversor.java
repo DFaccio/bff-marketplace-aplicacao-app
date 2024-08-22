@@ -9,16 +9,17 @@ public class EnderecoConversor implements Conversores<Endereco, EnderecoDto> {
 
     @Override
     public EnderecoDto converte(Endereco entidade) {
-        EnderecoDto dto = new EnderecoDto();
+        EnderecoDto dto = EnderecoDto.builder()
+                .apelido(entidade.getApelido())
+                .bairro(entidade.getBairro())
+                .cep(entidade.getCep())
+                .cidade(entidade.getCidade())
+                .complemento(entidade.getComplemento())
+                .estado(entidade.getEstado())
+                .logradouro(entidade.getLogradouro())
+                .numero(entidade.getNumero())
+                .build();
 
-        dto.setApelido(entidade.getApelido());
-        dto.setBairro(entidade.getBairro());
-        dto.setCep(entidade.getCep());
-        dto.setCidade(entidade.getCidade());
-        dto.setComplemento(entidade.getComplemento());
-        dto.setEstado(entidade.getEstado());
-        dto.setLogradouro(entidade.getLogradouro());
-        dto.setNumero(entidade.getNumero());
         dto.setId(entidade.getId());
 
         return dto;
@@ -26,18 +27,16 @@ public class EnderecoConversor implements Conversores<Endereco, EnderecoDto> {
 
     @Override
     public Endereco converte(EnderecoDto dto) {
-        Endereco entidade = new Endereco();
-
-        entidade.setApelido(dto.getApelido());
-        entidade.setBairro(dto.getBairro());
-        entidade.setCep(dto.getCep());
-        entidade.setCidade(dto.getCidade());
-        entidade.setComplemento(dto.getComplemento());
-        entidade.setEstado(dto.getEstado());
-        entidade.setLogradouro(dto.getLogradouro());
-        entidade.setNumero(dto.getNumero());
-        entidade.setId(dto.getId());
-
-        return entidade;
+        return Endereco.builder()
+                .apelido(dto.getApelido())
+                .bairro(dto.getBairro())
+                .cep(dto.getCep())
+                .cidade(dto.getCidade())
+                .complemento(dto.getComplemento())
+                .estado(dto.getEstado())
+                .logradouro(dto.getLogradouro())
+                .numero(dto.getNumero())
+                .id(dto.getId())
+                .build();
     }
 }

@@ -1,8 +1,8 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
+import br.com.dducl.collective_coffee_marketplace.util.enums.Perfil;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,6 +14,9 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "pessoa")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pessoa implements Serializable {
 
     @Serial
@@ -37,16 +40,15 @@ public class Pessoa implements Serializable {
     @Column
     private boolean ativo;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pessoa_chave", joinColumns = @JoinColumn(name = "pessoa_documento"), inverseJoinColumns = @JoinColumn(name = "chaves_pix"))
     private List<ChavesPix> chaves;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
+
+    @Enumerated(value = EnumType.STRING)
+    private Perfil perfil;
 
     @Override
     public boolean equals(Object o) {

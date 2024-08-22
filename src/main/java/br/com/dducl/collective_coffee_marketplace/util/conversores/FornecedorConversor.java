@@ -1,39 +1,58 @@
 package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
+import br.com.dducl.collective_coffee_marketplace.dto.FornecedorCadastro;
 import br.com.dducl.collective_coffee_marketplace.dto.FornecedorDto;
-import br.com.dducl.collective_coffee_marketplace.dto.PessoaDto;
+import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FornecedorConversor implements Conversores<Fornecedor, FornecedorDto> {
 
-    @Resource
-    private PessoaConversor pessoaConversor;
+    private final PessoaConversor pessoaConversor;
 
-    @Override
-    public FornecedorDto converte(Fornecedor entidade) {
-        FornecedorDto dto = new FornecedorDto();
+    private final EnderecoConversor enderecoConversor;
 
-        PessoaDto pessoaDto = pessoaConversor.converte(entidade.getPessoa());
+    private final ChavePixConversor chavePixConversor;
 
-        dto.setInformacoes(pessoaDto);
-        dto.setRazaoSocial(entidade.getRazaoSocial());
-        dto.setId(entidade.getId());
-
-        return dto;
+    public FornecedorConversor(PessoaConversor pessoaConversor, EnderecoConversor enderecoConversor, ChavePixConversor chavePixConversor) {
+        this.pessoaConversor = pessoaConversor;
+        this.enderecoConversor = enderecoConversor;
+        this.chavePixConversor = chavePixConversor;
     }
+
 
     @Override
     public Fornecedor converte(FornecedorDto dto) throws ValidationsException {
-        Fornecedor fornecedor = new Fornecedor();
+        return Fornecedor.builder()
+                .razaoSocial(dto.getRazaoSocial())
+                .pessoa(pessoaConversor.converte(dto))
+                .build();
+    }
 
-        fornecedor.setId(dto.getId());
-        fornecedor.setRazaoSocial(dto.getRazaoSocial());
-        fornecedor.setPessoa(pessoaConversor.converte(dto.getInformacoes()));
+    @Override
+    public FornecedorDto converte(Fornecedor entidade) {
+        FornecedorDto fornecedorDto = new FornecedorDto();
+        fornecedorDto.setId(entidade.getId());
+        fornecedorDto.setRazaoSocial(entidade.getRazaoSocial());
+        fornecedorDto.setNome(entidade.getPessoa().getNome());
+        fornecedorDto.setDocumento(entidade.getPessoa().getDocumento());
+        fornecedorDto.setEmail(entidade.getPessoa().getEmail());
+        fornecedorDto.setTelefone(entidade.getPessoa().getTelefone());
+        fornecedorDto.setDataCadastro(entidade.getPessoa().getDataCadastro().toString());
+        fornecedorDto.setAtivo(entidade.getPessoa().isAtivo());
+        fornecedorDto.setPerfil(entidade.getPessoa().getPerfil());
+        fornecedorDto.setEndereco(entidade.getPessoa().getEndereco() == null ? null : enderecoConversor.converte(entidade.getPessoa().getEndereco()));
+        fornecedorDto.setChavesPix(chavePixConversor.converteEntidades(entidade.getPessoa().getChaves()));
 
-        return fornecedor;
+        return fornecedorDto;
+    }
+
+    public Fornecedor converte(PessoaInfoDto dto) throws ValidationsException {
+        return Fornecedor.builder()
+                .razaoSocial(((FornecedorCadastro) dto.getPerfilDto()).getRazaoSocial())
+                .pessoa(pessoaConversor.converte(dto))
+                .build();
     }
 }

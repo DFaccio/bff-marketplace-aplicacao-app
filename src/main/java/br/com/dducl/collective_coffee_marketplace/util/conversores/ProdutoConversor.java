@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
 
-    @Resource
-    private FornecedorConversor fornecedorConversor;
+    /*@Resource
+    private FornecedorConversor fornecedorConversor;*/
     @Override
     public ProdutoDto converte(Produto entidade){
         ProdutoDto dto = new ProdutoDto();
@@ -22,7 +22,7 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
         dto.setValor(entidade.getValor());
         dto.setDisponivel(entidade.isDisponivel());
         dto.setDataCriacao(entidade.getDataCriacao().toString());
-        dto.setFornecedor(fornecedorConversor.converte(entidade.getFornecedor()));
+        /*dto.setFornecedor(fornecedorConversor.converte(entidade.getFornecedor()));*/
 
         return dto;
 
@@ -38,7 +38,7 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
         produto.setQuantidade(dto.getQuantidade());
         produto.setValor(dto.getValor());
         produto.setDisponivel(dto.isDisponivel());
-        produto.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));
+/*        produto.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));*/
 
         return produto;
     }

@@ -1,8 +1,7 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +10,9 @@ import java.io.Serializable;
 @Setter
 @Entity
 @Table(name = "endereco")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Endereco implements Serializable {
 
     @Serial

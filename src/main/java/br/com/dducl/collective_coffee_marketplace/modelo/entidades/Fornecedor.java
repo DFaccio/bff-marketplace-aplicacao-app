@@ -1,8 +1,7 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +10,9 @@ import java.io.Serializable;
 @Getter
 @Entity
 @Table(name = "fornecedor")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Fornecedor implements Serializable {
 
     @Serial
@@ -22,7 +24,7 @@ public class Fornecedor implements Serializable {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "pessoa_documento")
+    @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
 
     @Column(name = "razao_social")

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 public class StandardError {
 
-    private Instant timestamp;
+    private ZonedDateTime time;
 
     private int status;
 

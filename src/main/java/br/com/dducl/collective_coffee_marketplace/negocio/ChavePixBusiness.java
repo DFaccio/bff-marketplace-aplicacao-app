@@ -9,11 +9,15 @@ import br.com.dducl.collective_coffee_marketplace.util.conversores.ChavePixConve
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ChavePixBusiness {
@@ -27,48 +31,70 @@ public class ChavePixBusiness {
     @Resource
     private ChavePixConversor conversor;
 
-    public void insert(String identificador, ChavesPixDto chavesPixDto) throws NotFoundException, ValidationsException, NoSuchFieldException {
-        Optional<Pessoa> optional = pessoaRepository.findPessoaByDocumentoEquals(identificador);
+    @Autowired
+    private Clock clock;
+
+    public void insert(String documento, List<ChavesPixDto> chavesPixDto) throws NotFoundException, ValidationsException, NoSuchFieldException {
+        Optional<Pessoa> optional = pessoaRepository.findPessoaByDocumentoEquals(documento);
 
         if (optional.isEmpty()) {
-            throw new NotFoundException(identificador, "Pessoa");
-        }
-
-        ChavesPix jaCadastrada = repository.findChavePixByPessoaAndChave(identificador, chavesPixDto.getChave());
-
-        if (jaCadastrada != null) {
-            throw new ValidationsException("Chave já cadastrada");
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
         }
 
         Pessoa pessoa = optional.get();
 
-        ChavesPix chave = conversor.converte(chavesPixDto);
-        chave.setDataCadastro(LocalDate.now());
-
-        if (pessoa.getChaves() == null) {
-            pessoa.setChaves(new ArrayList<>());
-        }
-
-        pessoa.getChaves().add(chave);
+        validaChaveAndUpdate(pessoa, chavesPixDto);
 
         pessoaRepository.save(pessoa);
     }
 
-    public void update(String chave, ChavesPixDto chavesPixDto, String identificador) throws ValidationsException {
-        Optional<Pessoa> optional = pessoaRepository.findPessoaByDocumentoEqualsAndChaves_Chave(identificador, chave);
+    private void validaChaveAndUpdate(Pessoa pessoa, List<ChavesPixDto> chavesDto) {
+        List<ChavesPix> novasChaves = chavesDto.stream()
+                .collect(
+                        Collectors.toMap(
+                                ChavesPixDto::getChave,
+                                pix -> new ChavesPix(pix.getChave(), pix.isAtivo(), LocalDate.now(clock)),
+                                (existing, replacement) -> existing
+                        ))
+                .values()
+                .stream()
+                .toList();
 
-        if (optional.isEmpty()) {
-            throw new ValidationsException(String.format("%s chave não encontrada!", chave));
+        if (pessoa.getChaves() == null || pessoa.getChaves().isEmpty()) {
+            pessoa.setChaves(novasChaves);
+        } else {
+            Set<String> chavesSaved = pessoa.getChaves().stream()
+                    .map(ChavesPix::getChave)
+                    .collect(Collectors.toSet());
+
+            List<ChavesPix> toAdd = novasChaves.stream()
+                    .filter(chave -> !chavesSaved.contains(chave.getChave()))
+                    .toList();
+
+            pessoa.getChaves().addAll(toAdd);
+        }
+    }
+
+    public ChavesPixDto update(String documentoPessoal, String chave, ChavesPixDto chavesPixDto) throws NotFoundException, ValidationsException {
+        Optional<ChavesPix> chaveOptional = repository.findByChaveAndDocumentoPessoa(chave, documentoPessoal);
+
+        if (chaveOptional.isEmpty()) {
+            throw new NotFoundException("CHAVE_NAO_ENCONTRADA_DOCUMENTO_PESSOA");
         }
 
-        Pessoa pessoa = optional.get();
-        pessoa.getChaves().forEach(key -> {
-            if (key.getChave().equals(chave)) {
-                key.setChave(chavesPixDto.getChave());
-                key.setAtivo(chavesPixDto.isAtivo());
-            }
-        });
+        Optional<ChavesPix> chaveOptionalNewChave = repository.findByChaveAndDocumentoPessoa(chavesPixDto.getChave(), documentoPessoal);
 
-        pessoaRepository.save(pessoa);
+        if (chaveOptionalNewChave.isPresent()) {
+            throw new ValidationsException("CHAVE_JA_CADASTRADA");
+        }
+
+        ChavesPix chavesPix = chaveOptional.get();
+        chavesPix.setChave(chavesPixDto.getChave());
+        chavesPix.setAtivo(chavesPixDto.isAtivo());
+        chavesPix.setDataCadastro(LocalDate.now(clock));
+
+        chavesPix = repository.save(chavesPix);
+
+        return conversor.converte(chavesPix);
     }
 }

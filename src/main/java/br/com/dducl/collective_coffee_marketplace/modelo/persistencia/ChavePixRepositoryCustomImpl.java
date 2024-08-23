@@ -6,29 +6,27 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
+import java.util.Optional;
+
 class ChavePixRepositoryCustomImpl implements ChavePixRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public ChavesPix findChavePixByPessoaAndChave(String identificador, String chave) {
-        String stringQuery = new StringBuilder()
-                .append("select cp.* from chaves_pix cp ")
-                .append("inner join pessoa_chave pc on cp.id = pc.chaves_pix ")
-                .append("inner join pessoa p on p.identificador  = pc.pessoa_id ")
-                .append("where p.identificador = '")
-                .append(identificador)
-                .append("' and cp.chave = '")
-                .append(chave)
-                .append("'").toString();
+    public Optional<ChavesPix> findByChaveAndDocumentoPessoa(String chave, String documentoPessoal) {
+        String sql = "SELECT chaves.* " +
+                "FROM chaves_pix AS chaves " +
+                "INNER JOIN pessoa_chave AS pc ON pc.chaves_pix = chaves.id " +
+                "WHERE pc.pessoa_documento = '" + documentoPessoal +
+                "' AND chaves.chave = '" + chave + "'";
 
-        Query query = entityManager.createNativeQuery(stringQuery, ChavesPix.class);
+        Query query = entityManager.createNativeQuery(sql, ChavesPix.class);
 
         try {
-            return (ChavesPix) query.getSingleResult();
+            return Optional.of((ChavesPix) query.getSingleResult());
         } catch (NoResultException exception) {
-            return null;
+            return Optional.empty();
         }
     }
 }

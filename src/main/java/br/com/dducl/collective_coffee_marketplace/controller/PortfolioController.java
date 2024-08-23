@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/portfolio")
-@Tag(name = "Chaves PIX", description = "Operações com o os itens de venda")
+@Tag(name = "Portifólio", description = "Operações com o os itens de venda")
 public class PortfolioController {
 
     @Resource

@@ -1,7 +1,9 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
@@ -12,6 +14,8 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "chaves_pix")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChavesPix implements Serializable {
 
     @Serial
@@ -30,4 +34,10 @@ public class ChavesPix implements Serializable {
 
     @Temporal(value = TemporalType.DATE)
     private LocalDate dataCadastro;
+
+    public ChavesPix(String chave, boolean ativo, LocalDate dataCadastro) {
+        this.chave = chave;
+        this.ativo = ativo;
+        this.dataCadastro = dataCadastro;
+    }
 }

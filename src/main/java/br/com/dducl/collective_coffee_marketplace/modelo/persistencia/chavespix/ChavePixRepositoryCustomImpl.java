@@ -1,4 +1,4 @@
-package br.com.dducl.collective_coffee_marketplace.modelo.persistencia;
+package br.com.dducl.collective_coffee_marketplace.modelo.persistencia.chavespix;
 
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ChavesPix;
 import jakarta.persistence.EntityManager;

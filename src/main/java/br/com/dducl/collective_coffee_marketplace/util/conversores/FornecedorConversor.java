@@ -1,7 +1,7 @@
 package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
-import br.com.dducl.collective_coffee_marketplace.dto.FornecedorCadastro;
-import br.com.dducl.collective_coffee_marketplace.dto.FornecedorDto;
+import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorCadastro;
+import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorDto;
 import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;

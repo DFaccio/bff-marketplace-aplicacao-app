@@ -1,6 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.dto.pessoa;
 
-import br.com.dducl.collective_coffee_marketplace.dto.FornecedorCadastro;
+import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorCadastro;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.Getter;
 import lombok.Setter;

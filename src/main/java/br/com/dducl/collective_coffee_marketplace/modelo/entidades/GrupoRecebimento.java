@@ -1,19 +1,22 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "grupocompra")
-public class GrupoCompra implements Serializable {
+@Table
+@AllArgsConstructor
+@NoArgsConstructor
+public class GrupoRecebimento implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1;
@@ -23,19 +26,21 @@ public class GrupoCompra implements Serializable {
     @Column
     private Integer id;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private LocalDateTime dataCriacao;
-
     @Column
     private String nome;
 
     @Column
+    private String email;
+
+    @Column
+    private String telefone;
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private LocalDateTime dataCriacao;
+
+    @Column
     private boolean ativo;
 
-    @ManyToMany
-    @JoinTable(name = "membros_grupo_compra", joinColumns = @JoinColumn(name = "grupocompra_id"), inverseJoinColumns = @JoinColumn(name = "pessoa_documento"))
-    private List<Pessoa> pessoas;
-
     @OneToOne
-    private Pessoa administrador;
+    private Endereco endereco;
 }

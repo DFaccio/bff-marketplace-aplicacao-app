@@ -1,4 +1,4 @@
-package br.com.dducl.collective_coffee_marketplace.dto;
+package br.com.dducl.collective_coffee_marketplace.dto.fornecedor;
 
 import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaPerfilDto;
 import jakarta.validation.constraints.NotBlank;

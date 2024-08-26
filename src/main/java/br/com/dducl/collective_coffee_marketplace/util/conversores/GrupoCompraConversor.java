@@ -1,15 +1,10 @@
 package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
-import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraCadastroUpdateDto;
 import br.com.dducl.collective_coffee_marketplace.dto.GrupoCompraFullDto;
-import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.GrupoCompra;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 public class GrupoCompraConversor implements Conversores<GrupoCompra, GrupoCompraFullDto> {
@@ -21,46 +16,26 @@ public class GrupoCompraConversor implements Conversores<GrupoCompra, GrupoCompr
     public GrupoCompraFullDto converte(GrupoCompra entidade) {
         GrupoCompraFullDto grupoCompraDto = new GrupoCompraFullDto();
 
-        grupoCompraDto.setAtivo(entidade.isAtivo());
-        grupoCompraDto.setNome(entidade.getNome());
         grupoCompraDto.setId(entidade.getId());
-
-        if (entidade.getDataCriacao() != null) {
-            grupoCompraDto.setDataCriacao(entidade.getDataCriacao().toString());
-        }
-
-       /* grupoCompraDto.setPessoas(pessoaConversor.converteEntidades(entidade.getPessoas()));*/
+        grupoCompraDto.setNome(entidade.getNome());
+        grupoCompraDto.setAtivo(entidade.isAtivo());
+        grupoCompraDto.setDataCriacao(entidade.getDataCriacao().toString());
+        grupoCompraDto.setPessoas(pessoaConversor.converteEntidades(entidade.getPessoas()));
+        grupoCompraDto.setAdministrador(pessoaConversor.converte(entidade.getAdministrador()));
 
         return grupoCompraDto;
     }
 
     @Override
     public GrupoCompra converte(GrupoCompraFullDto dto) throws ValidationsException {
-        GrupoCompra entidade = getGrupoCompra(dto.isAtivo(), dto.getNome(), dto.getId(), dto.getDataCriacao());
+        GrupoCompra grupoCompra = new GrupoCompra();
 
-        /*entidade.setPessoas(pessoaConversor.converteDto(dto.getPessoas()));*/
+        grupoCompra.setId(dto.getId());
+        grupoCompra.setNome(dto.getNome());
+        grupoCompra.setAtivo(dto.isAtivo());
+        grupoCompra.setAdministrador(pessoaConversor.converte(dto.getAdministrador()));
+        grupoCompra.setPessoas(pessoaConversor.converteDto(dto.getPessoas()));
 
-        return entidade;
-    }
-
-    private GrupoCompra getGrupoCompra(boolean ativo, String nome, Integer id, String data) {
-        GrupoCompra entidade = new GrupoCompra();
-
-        entidade.setAtivo(ativo);
-        entidade.setNome(nome);
-        entidade.setId(id);
-
-        if (data != null) {
-            entidade.setDataCriacao(LocalDateTime.parse(data));
-        }
-        return entidade;
-    }
-
-    public GrupoCompra converte(List<PessoaDto> pessoas, GrupoCompraCadastroUpdateDto dto) {
-        GrupoCompra entidade = getGrupoCompra(dto.isAtivo(), dto.getNome(), dto.getId(), dto.getDataCriacao());
-
-        /*entidade.setPessoas(pessoaConversor.converteDto(pessoas));*/
-
-        return entidade;
+        return grupoCompra;
     }
 }

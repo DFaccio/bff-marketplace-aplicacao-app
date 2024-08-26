@@ -15,4 +15,8 @@ public class NotFoundException extends Exception {
     public NotFoundException(String code) {
         super(MessageUtil.getMessage(code));
     }
+
+    public NotFoundException(String code, String... replace) {
+        super(MessageUtil.getMessage(code, replace));
+    }
 }

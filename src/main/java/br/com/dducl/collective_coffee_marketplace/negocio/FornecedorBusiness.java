@@ -1,6 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.negocio;
 
-import br.com.dducl.collective_coffee_marketplace.dto.FornecedorDto;
+import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorDto;
 import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;

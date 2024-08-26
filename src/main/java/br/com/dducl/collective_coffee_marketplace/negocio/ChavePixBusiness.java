@@ -3,7 +3,7 @@ package br.com.dducl.collective_coffee_marketplace.negocio;
 import br.com.dducl.collective_coffee_marketplace.dto.ChavesPixDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ChavesPix;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ChavesPixRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.chavespix.ChavesPixRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.ChavePixConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;

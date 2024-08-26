@@ -6,13 +6,17 @@ import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.http.HttpStatusCode;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/produto")
@@ -22,13 +26,15 @@ public class ProdutoController {
     @Resource
     private ProdutoBusiness business;
 
-    @GetMapping
+    @GetMapping(value = "/fornecedor/{documento}")
     @Operation(description = "Recuperar produtos")
-    public ResponseEntity<ResultadoPaginado<ProdutoDto>> findAll(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer initialPage) {
-
+    public ResponseEntity<ResultadoPaginado<ProdutoDto>> findAll(@RequestParam(required = false) Integer pageSize,
+                                                                 @RequestParam(required = false) Integer initialPage,
+                                                                 @Parameter(description = "Refere-se ao produto está ativado") @RequestParam boolean status,
+                                                                 @Parameter(description = "Documento do fornecedor") @PathVariable String documento) {
         Pagination page = new Pagination(initialPage, pageSize);
 
-        return ResponseEntity.ok(business.findAll(page));
+        return ResponseEntity.ok(business.findAll(documento, status, page));
     }
 
     @GetMapping(value = "/id/{id}")
@@ -37,27 +43,25 @@ public class ProdutoController {
         return ResponseEntity.ok(business.findProdutoById(id));
     }
 
-    @PostMapping("/new")
-    @Operation(description = "Cadastrar produto")
-    public ResponseEntity<ProdutoDto> insert(@RequestBody ProdutoDto produto) throws NotFoundException, ValidationsException {
-        produto = business.insert(produto);
+    @PostMapping("/fornecedor/{documento}")
+    @Operation(description = "Cadastrar produto por fornecedor")
+    public ResponseEntity<Void> insert(@RequestBody @NotEmpty @Valid List<ProdutoDto> produtos,
+                                       @Parameter(description = "Documento do fornecedor") @PathVariable String documento) throws NotFoundException, ValidationsException {
+        business.insert(documento, produtos);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/update")
-    @Operation(description = "Atualizar produto")
-    public ResponseEntity<ProdutoDto> update(@RequestBody ProdutoDto produto) throws ValidationsException {
-        produto = business.update(produto);
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
+    @PutMapping(value = "/{id}")
+    @Operation(description = "Atualizar produto. O fornecedor não será atualizado")
+    public ResponseEntity<ProdutoDto> update(@RequestBody @Valid ProdutoDto produto,
+                                             @PathVariable Integer id) throws ValidationsException {
+        return ResponseEntity.ok(business.update(id, produto));
     }
 
-    @DeleteMapping("/delete/{id}")
-    @Operation(description = "Deletar produto")
-    public ResponseEntity<ProdutoDto> delete(@PathVariable int id) {
-        ProdutoDto produto = business.delete(business.findProdutoById(id));
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(produto);
+    @PutMapping("/desativa/{id}")
+    @Operation(description = "Desativar produto")
+    public ResponseEntity<ProdutoDto> delete(@PathVariable int id) throws ValidationsException {
+        return ResponseEntity.ok(business.desativa(id));
     }
 }

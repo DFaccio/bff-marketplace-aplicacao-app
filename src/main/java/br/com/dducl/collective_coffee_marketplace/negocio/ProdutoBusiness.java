@@ -11,13 +11,16 @@ import br.com.dducl.collective_coffee_marketplace.util.conversores.ProdutoConver
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,70 +35,74 @@ public class ProdutoBusiness {
     @Resource
     private FornecedorRepository fornecedorRepository;
 
-   /* @Resource
-    private FornecedorConversor fornecedorConversor;*/
+    @Autowired
+    private Clock clock;
 
-    public ProdutoDto insert(ProdutoDto dto) throws NotFoundException, ValidationsException {
-
-       /* Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaDocumento(dto.getFornecedor().getInformacoes().getIdentificador());
-
-        if (fornecedor.isEmpty()) {
-            throw new NotFoundException(dto.getId(), "Fornecedor");
-        }
-*/
-        /* dto.setFornecedor(fornecedorConversor.converte(fornecedor.get()));*/
-
-        Produto produto = conversor.converte(dto);
-
-        produto.setDataCriacao(LocalDateTime.now());
-
-        return conversor.converte(repository.save(produto));
-    }
-
-    public ResultadoPaginado<ProdutoDto> findAll(Pagination page) {
+    public ResultadoPaginado<ProdutoDto> findAll(String documento, boolean status, Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("descricao"));
 
-        Page<Produto> pagina = repository.findAll(pageable);
+        Page<Produto> pagina = repository.findByDisponivelAndFornecedor_PessoaDocumento(status, documento, pageable);
 
         return conversor.converteEntidades(pagina);
     }
 
-    public ProdutoDto findProdutoById(int descricao) {
-        var produto = (repository.getReferenceById(descricao));
+    public ProdutoDto findProdutoById(int id) {
+        var produto = repository.getReferenceById(id);
+
         return conversor.converte(produto);
     }
 
-    public ProdutoDto update(ProdutoDto dto) throws ValidationsException {
-        var produto = repository.getReferenceById(dto.getId());
+    public ProdutoDto update(Integer id, ProdutoDto dto) throws ValidationsException {
+        Optional<Produto> optional = repository.findById(id);
 
-        if (produto.equals(null)) {
-            throw new ValidationsException("Produto informado para atualiza\u00E7\u00E3o n\u00E3o foi encontrado!");
+        if (optional.isEmpty()) {
+            throw new ValidationsException("PRODUTO_ATUALIZAR_NAO_ENCONTRADO");
         }
 
-        Produto atualizar = produto;
-        if (dto.getConteudo() != null) {
-            atualizar.setConteudo(dto.getConteudo());
-        }
-        if (dto.getDescricao() != null) {
-            atualizar.setDescricao(dto.getDescricao());
-        }
-        if (dto.getQuantidade() != 0) {
-            atualizar.setQuantidade(dto.getQuantidade());
-        }
-        if (dto.getValor() != null) {
-            atualizar.setValor(dto.getValor());
-        }
-        atualizar.setDisponivel(dto.isDisponivel());
+        Produto toUpdate = optional.get();
+        toUpdate.setDescricao(dto.getDescricao());
+        toUpdate.setConteudo(dto.getConteudo());
+        toUpdate.setQuantidade(dto.getQuantidade());
+        toUpdate.setValor(dto.getValor());
+        toUpdate.setDisponivel(dto.isDisponivel());
 
-        return conversor.converte(repository.save(atualizar));
+        toUpdate.setAtualizadoEm(LocalDateTime.now(clock));
 
+        toUpdate = repository.save(toUpdate);
+
+        return conversor.converte(toUpdate);
     }
 
-    public ProdutoDto delete(ProdutoDto dto) {
-        var produto = (repository.getReferenceById(dto.getId()));
-        Produto atualizar = produto;
+    public ProdutoDto desativa(Integer id) throws ValidationsException {
+        Optional<Produto> optional = repository.findById(id);
 
-        atualizar.setDisponivel(false);
-        return conversor.converte(repository.save(atualizar));
+        if (optional.isEmpty()) {
+            throw new ValidationsException("PRODUTO_ATUALIZAR_NAO_ENCONTRADO");
+        }
+
+        Produto desativar = optional.get();
+        desativar.setDisponivel(false);
+
+        desativar = repository.save(desativar);
+
+        return conversor.converte(desativar);
+    }
+
+    public void insert(String documento, List<ProdutoDto> produtosDto) throws NotFoundException {
+        Optional<Fornecedor> optionalFornecedor = fornecedorRepository.findByPessoaDocumento(documento);
+
+        if (optionalFornecedor.isEmpty()) {
+            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+        }
+
+        List<Produto> produtos = conversor.converteDto(produtosDto);
+        Fornecedor fornecedor = optionalFornecedor.get();
+
+        produtos.forEach(produto -> {
+            produto.setDataCriacao(LocalDateTime.now(clock));
+            produto.setFornecedor(fornecedor);
+        });
+
+        repository.saveAll(produtos);
     }
 }

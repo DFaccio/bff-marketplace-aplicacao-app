@@ -3,16 +3,20 @@ package br.com.dducl.collective_coffee_marketplace.util.conversores;
 import br.com.dducl.collective_coffee_marketplace.dto.ProdutoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
+public class ProdutoConversor implements Conversores<Produto, ProdutoDto> {
 
-    /*@Resource
-    private FornecedorConversor fornecedorConversor;*/
+    private final FornecedorConversor fornecedorConversor;
+
+    public ProdutoConversor(FornecedorConversor fornecedorConversor) {
+        this.fornecedorConversor = fornecedorConversor;
+    }
+
+
     @Override
-    public ProdutoDto converte(Produto entidade){
+    public ProdutoDto converte(Produto entidade) {
         ProdutoDto dto = new ProdutoDto();
 
         dto.setId(entidade.getId());
@@ -22,10 +26,9 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
         dto.setValor(entidade.getValor());
         dto.setDisponivel(entidade.isDisponivel());
         dto.setDataCriacao(entidade.getDataCriacao().toString());
-        /*dto.setFornecedor(fornecedorConversor.converte(entidade.getFornecedor()));*/
+        dto.setFornecedor(fornecedorConversor.converte(entidade.getFornecedor()));
 
         return dto;
-
     }
 
     @Override
@@ -38,7 +41,10 @@ public class ProdutoConversor implements Conversores<Produto, ProdutoDto>{
         produto.setQuantidade(dto.getQuantidade());
         produto.setValor(dto.getValor());
         produto.setDisponivel(dto.isDisponivel());
-/*        produto.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));*/
+
+        if (dto.getFornecedor() != null) {
+            produto.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));
+        }
 
         return produto;
     }

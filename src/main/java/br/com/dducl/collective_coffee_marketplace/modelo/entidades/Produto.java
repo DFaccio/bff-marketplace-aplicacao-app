@@ -42,6 +42,10 @@ public class Produto implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDateTime dataCriacao;
 
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private LocalDateTime atualizadoEm;
+
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;

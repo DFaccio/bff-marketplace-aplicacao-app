@@ -65,7 +65,7 @@ public class UsuarioBusiness {
 
     private void validaTipoPerfil(String identificador, Perfil perfil) throws ValidationsException {
         if (Perfil.FORNECEDOR.equals(perfil)) {
-            Optional<Fornecedor> optional = fornecedorRepository.findFornecedorByPessoaDocumento(identificador);
+            Optional<Fornecedor> optional = fornecedorRepository.findByPessoaDocumento(identificador);
 
             if (optional.isEmpty()) {
                 throw new ValidationsException("Para perfil de fornecedor, o identificar deve ser de um fornecedor!");

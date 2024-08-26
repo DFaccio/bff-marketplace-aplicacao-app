@@ -44,7 +44,7 @@ public class FornecedorBusiness {
     }
 
     public FornecedorDto insert(PessoaInfoDto pessoaInfoDto) throws ValidationsException {
-        Optional<Fornecedor> optionalFornecedor = repository.findFornecedorByPessoaDocumento(pessoaInfoDto.getDocumento());
+        Optional<Fornecedor> optionalFornecedor = repository.findByPessoaDocumento(pessoaInfoDto.getDocumento());
 
         if (optionalFornecedor.isPresent()) {
             throw new ValidationsException("FORNECEDOR_JA_CADASTRADO");
@@ -81,7 +81,7 @@ public class FornecedorBusiness {
     }
 
     public FornecedorDto updateToVendor(String documento, String razaoSocial) throws ValidationsException, NotFoundException {
-        Optional<Fornecedor> optionalFornecedor = repository.findFornecedorByPessoaDocumento(documento);
+        Optional<Fornecedor> optionalFornecedor = repository.findByPessoaDocumento(documento);
 
         if (optionalFornecedor.isPresent()) {
             throw new ValidationsException("FORNECEDOR_JA_CADASTRADO");
@@ -114,7 +114,7 @@ public class FornecedorBusiness {
     }
 
     public FornecedorDto findFornecedorByDocumento(String documento) throws NotFoundException {
-        Optional<Fornecedor> optional = repository.findFornecedorByPessoaDocumento(documento);
+        Optional<Fornecedor> optional = repository.findByPessoaDocumento(documento);
 
         if (optional.isEmpty()) {
             throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
@@ -126,7 +126,7 @@ public class FornecedorBusiness {
     public FornecedorDto updateRazaoSocial(String documento, String razao) throws NotFoundException, ValidationsException {
         validarRazaoSocial(razao);
 
-        Optional<Fornecedor> optional = repository.findFornecedorByPessoaDocumento(documento);
+        Optional<Fornecedor> optional = repository.findByPessoaDocumento(documento);
 
         if (optional.isEmpty()) {
             throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");

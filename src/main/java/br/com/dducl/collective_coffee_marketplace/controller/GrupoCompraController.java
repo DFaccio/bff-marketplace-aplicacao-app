@@ -30,7 +30,7 @@ public class GrupoCompraController {
     }
 
     @PutMapping(value = "/id/{id}")
-    @Operation(description = "Atualizar grupo de compra. Administrador do grupo não é alterado")
+    @Operation(description = "Atualizar grupo de compra. Administrador do grupo não é alterado. As pessoas serão excluídas/adicionadas")
     public ResponseEntity<GrupoCompraFullDto> update(@Valid @RequestBody GrupoCompraFullDto grupoCompra) throws NotFoundException, ValidationsException {
         return ResponseEntity.ok(business.update(grupoCompra));
     }
@@ -39,9 +39,10 @@ public class GrupoCompraController {
     @Operation(description = "Recuperar os grupos de compra")
     public ResponseEntity<ResultadoPaginado<GrupoCompraFullDto>> findAll(@RequestParam(required = false) Integer pageSize,
                                                                          @RequestParam(required = false) Integer initialPage,
-                                                                         @Parameter(description = "Status do grupo. Refere-se a está ou não ativo") @RequestParam(required = false, defaultValue = "true") boolean status) {
+                                                                         @Parameter(description = "Status do grupo. Refere-se a está ou não ativo") @RequestParam(required = false, defaultValue = "true") boolean status,
+                                                                         @Parameter(description = "Nome do grupo") @RequestParam(required = false) String nome) {
         Pagination page = new Pagination(initialPage, pageSize);
 
-        return ResponseEntity.ok(business.findAll(status, page));
+        return ResponseEntity.ok(business.findAll(status, nome, page));
     }
 }

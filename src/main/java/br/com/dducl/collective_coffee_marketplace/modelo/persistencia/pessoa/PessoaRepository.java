@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,9 +15,9 @@ public interface PessoaRepository extends JpaRepository<Pessoa, String>, PessoaR
 
     Optional<Pessoa> findPessoaByDocumentoEquals(String identificador);
 
-    Optional<Pessoa> findPessoaByDocumentoEqualsAndChaves_Chave(String identificador, String chave);
-
     Page<Pessoa> findAllByPerfilEquals(Perfil perfil, Pageable pageable);
 
     Optional<Pessoa> findPessoaByDocumentoAndPerfil(String documento, Perfil perfil);
+
+    List<Pessoa> findByDocumentoIn(List<String> documentos);
 }

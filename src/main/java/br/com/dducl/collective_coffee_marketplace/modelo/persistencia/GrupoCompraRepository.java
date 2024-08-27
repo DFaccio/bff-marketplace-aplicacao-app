@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface GrupoCompraRepository extends JpaRepository<GrupoCompra, Integer> {
 
     Page<GrupoCompra> findByAtivo(boolean status, Pageable pageable);
+
+    Page<GrupoCompra> findByAtivoAndNome(boolean status, String nome, Pageable pageable);
 }

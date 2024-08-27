@@ -4,7 +4,7 @@ import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorDto;
 import br.com.dducl.collective_coffee_marketplace.dto.pessoa.PessoaInfoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.FornecedorRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.fornecedor.FornecedorRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
@@ -35,10 +35,10 @@ public class FornecedorBusiness {
         this.pessoaRepository = pessoaRepository;
     }
 
-    public ResultadoPaginado<FornecedorDto> findAll(Pagination page) {
+    public ResultadoPaginado<FornecedorDto> findAll(String razaoSocial, String telefone, String documento, String email, Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("pessoa.nome"));
 
-        Page<Fornecedor> pagina = repository.findAll(pageable);
+        Page<Fornecedor> pagina = repository.findAll(razaoSocial, telefone, documento, email, pageable);
 
         return conversor.converteEntidades(pagina);
     }

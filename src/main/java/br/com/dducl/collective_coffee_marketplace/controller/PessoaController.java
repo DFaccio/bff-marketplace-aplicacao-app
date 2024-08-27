@@ -37,14 +37,19 @@ public class PessoaController {
     @Operation(description = "Recuperar pessoas por perfil")
     public ResponseEntity<ResultadoPaginado<? extends PessoaDto>> findAll(@RequestParam(required = false) Integer pageSize,
                                                                           @RequestParam(required = false) Integer initialPage,
-                                                                          @RequestParam Perfil perfil) {
+                                                                          @RequestParam Perfil perfil,
+                                                                          @RequestParam(required = false) String telefone,
+                                                                          @RequestParam(required = false) String documento,
+                                                                          @RequestParam(required = false) String email,
+                                                                          @RequestParam(required = false) String nome,
+                                                                          @RequestParam(required = false) String razaoSocial) {
         Pagination page = new Pagination(initialPage, pageSize);
 
         if (Perfil.FORNECEDOR.equals(perfil)) {
-            return ResponseEntity.ok(fornecedorBusiness.findAll(page));
+            return ResponseEntity.ok(fornecedorBusiness.findAll(razaoSocial, telefone, documento, email, page));
         }
 
-        return ResponseEntity.ok(business.findAll(perfil, page));
+        return ResponseEntity.ok(business.findAll(nome, telefone, documento, email, perfil, page));
     }
 
     @PostMapping
@@ -83,7 +88,7 @@ public class PessoaController {
 
     @PutMapping(value = "/fornecedor/documento/{documento}")
     @Operation(description = "Alterar pessoa cadastrada para fornecedor")
-    public ResponseEntity<FornecedorDto> updateToVendor(@Parameter(description = "Razão Social")@RequestBody String razaoSocial, @PathVariable String documento) throws NotFoundException, ValidationsException {
+    public ResponseEntity<FornecedorDto> updateToVendor(@Parameter(description = "Razão Social") @RequestBody String razaoSocial, @PathVariable String documento) throws NotFoundException, ValidationsException {
         return ResponseEntity.ok(fornecedorBusiness.updateToVendor(documento, razaoSocial));
     }
 

@@ -31,10 +31,10 @@ public class PessoaBusiness {
         this.repository = repository;
     }
 
-    public ResultadoPaginado<PessoaDto> findAll(Perfil perfil, Pagination page) {
+    public ResultadoPaginado<PessoaDto> findAll(String nome, String telefone, String documento, String email, Perfil perfil, Pagination page) {
         Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize(), Sort.by("documento"));
 
-        Page<Pessoa> pagina = repository.findAllByPerfilEquals(perfil, pageable);
+        Page<Pessoa> pagina = repository.findAll(nome, telefone, documento, email, perfil, pageable);
 
         return conversor.converteEntidades(pagina);
     }

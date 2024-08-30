@@ -1,6 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
-import br.com.dducl.collective_coffee_marketplace.util.enums.StatusPortifolio;
+import br.com.dducl.collective_coffee_marketplace.util.enums.StatusPortfolio;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,8 +32,8 @@ public class Portfolio implements Serializable {
     private String descricao;
 
     @ManyToMany
-    @JoinTable(name = "portfolio_produto", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
-    private List<Produto> produtos;
+    @JoinTable(name = "portfolio_produtos", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_portifolio_id"))
+    private Set<ProdutoPortfolio> produtos;
 
     @Column
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -45,5 +45,5 @@ public class Portfolio implements Serializable {
 
     @Column
     @Enumerated(value = EnumType.STRING)
-    private StatusPortifolio status;
+    private StatusPortfolio status;
 }

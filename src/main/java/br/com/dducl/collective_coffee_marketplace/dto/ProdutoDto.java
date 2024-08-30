@@ -1,5 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.dto;
 
+import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;

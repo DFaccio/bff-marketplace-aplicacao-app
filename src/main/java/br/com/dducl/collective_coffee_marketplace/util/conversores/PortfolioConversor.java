@@ -1,54 +1,71 @@
 package br.com.dducl.collective_coffee_marketplace.util.conversores;
 
-import br.com.dducl.collective_coffee_marketplace.dto.*;
+import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioCadastroDto;
+import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioDto;
+import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Portfolio;
-import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
+import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ProdutoPortfolio;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
+import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class PortfolioConversor implements Conversores<Portfolio, PortfolioDto> {
-    /*@Resource
-    private FornecedorConversor fornecedorConversor;*/
 
-    @Resource
-    private ProdutoConversor produtoConversor;
+    private final FornecedorConversor fornecedorConversor;
+
+    private final ProdutoPortfolioConversor produtoPortfolioConversor;
+
+    public PortfolioConversor(FornecedorConversor fornecedorConversor, ProdutoPortfolioConversor produtoPortfolioConversor) {
+        this.fornecedorConversor = fornecedorConversor;
+        this.produtoPortfolioConversor = produtoPortfolioConversor;
+    }
+
 
     @Override
     public PortfolioDto converte(Portfolio entidade) {
-        PortfolioDto dto = new PortfolioDto();
+        PortfolioDto portfolioDto = new PortfolioDto();
+        portfolioDto.setId(entidade.getId());
+        portfolioDto.setFornecedor(fornecedorConversor.converte(entidade.getFornecedor()));
+        portfolioDto.setDescricao(entidade.getDescricao());
+        portfolioDto.setDataCriacao(entidade.getDataCriacao().toString());
+        portfolioDto.setDataVigencia(entidade.getDataVigencia().toString());
+        portfolioDto.setStatus(entidade.getStatus());
+        portfolioDto.setProdutos(produtoPortfolioConversor.converteEntidades(entidade.getProdutos().stream().toList()));
 
-        /*FornecedorDto fornecedorDto = fornecedorConversor.converte(entidade.getFornecedor());*/
-        /*dto.setFornecedor(fornecedorDto);*/
-
-        dto.setId(entidade.getId());
-        dto.setDescricao(entidade.getDescricao());
-        dto.setStatus(entidade.getStatus());
-        dto.setDataVigencia(entidade.getDataVigencia());
-        dto.setDataCriacao(entidade.getDataCriacao());
-
-        List<ProdutoDto> produtos = produtoConversor.converteEntidades(entidade.getProdutos());
-        dto.setProdutos(produtos);
-
-        return dto;
+        return portfolioDto;
     }
 
     @Override
-    public Portfolio converte(PortfolioDto dto) throws ValidationsException  {
+    public Portfolio converte(PortfolioDto dto) throws ValidationsException {
         Portfolio portfolio = new Portfolio();
-
         portfolio.setId(dto.getId());
+        portfolio.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));
         portfolio.setDescricao(dto.getDescricao());
+        portfolio.setDataVigencia(LocalDateTime.parse(dto.getDataVigencia(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         portfolio.setStatus(dto.getStatus());
-        portfolio.setDataVigencia(dto.getDataVigencia());
-        /*portfolio.setFornecedor(fornecedorConversor.converte(dto.getFornecedor()));*/
-
-        List<Produto> produtos = produtoConversor.converteDto(dto.getProdutos());
-        portfolio.setProdutos(produtos);
+        portfolio.setProdutos(new HashSet<>(produtoPortfolioConversor.converteDto(dto.getProdutos())));
 
         return portfolio;
     }
+
+    public Portfolio converte(PortfolioCadastroDto dto) throws ValidationsException {
+        Portfolio portfolio = new Portfolio();
+        portfolio.setFornecedor(Fornecedor.builder()
+                .id(dto.fornecedorId())
+                .build());
+        portfolio.setDescricao(dto.descricao());
+        portfolio.setStatus(dto.status());
+        portfolio.setDataVigencia(LocalDateTime.parse(dto.dataVigencia(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        portfolio.setProdutos(produtoPortfolioConversor.converte(dto.produtos()));
+
+        return portfolio;
+    }
+
+
 }

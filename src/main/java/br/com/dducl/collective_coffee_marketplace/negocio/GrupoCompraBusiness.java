@@ -83,6 +83,11 @@ public class GrupoCompraBusiness {
         }
 
         GrupoCompra toUpdate = optional.get();
+
+        if (!toUpdate.isAtivo()) {
+            throw new ValidationsException("GRUPO_DESATIVADO_NAO_ATUALIZA");
+        }
+
         GrupoCompra newValues = conversor.converte(grupoCompraDto);
 
         toUpdate.setNome(newValues.getNome());

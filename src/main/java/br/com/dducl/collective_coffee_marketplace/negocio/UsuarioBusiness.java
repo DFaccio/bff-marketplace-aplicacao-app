@@ -6,7 +6,7 @@ import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Pessoa;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.SenhaUsuario;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Usuario;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.FornecedorRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.fornecedor.FornecedorRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.UsuarioRepository;
 import br.com.dducl.collective_coffee_marketplace.util.PasswordUtils;

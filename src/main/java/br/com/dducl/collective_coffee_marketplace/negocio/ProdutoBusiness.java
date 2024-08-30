@@ -3,7 +3,7 @@ package br.com.dducl.collective_coffee_marketplace.negocio;
 import br.com.dducl.collective_coffee_marketplace.dto.ProdutoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.FornecedorRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.fornecedor.FornecedorRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;

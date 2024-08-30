@@ -1,10 +1,7 @@
 package br.com.dducl.collective_coffee_marketplace.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GrupoRecebimento implements Serializable {
 
     @Serial
@@ -41,6 +39,6 @@ public class GrupoRecebimento implements Serializable {
     @Column
     private boolean ativo;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
 }

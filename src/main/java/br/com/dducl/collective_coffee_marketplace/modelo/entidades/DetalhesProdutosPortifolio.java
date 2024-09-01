@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProdutoPortfolio implements Serializable {
+public class DetalhesProdutosPortifolio implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

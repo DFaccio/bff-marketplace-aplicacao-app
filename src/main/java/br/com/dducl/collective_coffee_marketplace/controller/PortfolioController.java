@@ -1,9 +1,8 @@
 package br.com.dducl.collective_coffee_marketplace.controller;
 
-import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioCadastroDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioResumidoDto;
-import br.com.dducl.collective_coffee_marketplace.dto.portfolio_produto.ProdutoPortfolioDto;
+import br.com.dducl.collective_coffee_marketplace.dto.ProdutoPortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.negocio.PortfolioBusiness;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
@@ -14,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,33 +44,35 @@ public class PortfolioController {
 
     @PostMapping
     @Operation(description = "Adicionar itens de venda")
-    public ResponseEntity<PortfolioResumidoDto> insert(@RequestBody PortfolioCadastroDto portfolio) throws ValidationsException, NotFoundException {
-        portfolio = business.insert(portfolio);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(portfolio);
+    public ResponseEntity<PortfolioResumidoDto> insert(@Valid @RequestBody PortfolioDto portfolio) throws ValidationsException, NotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(business.insert(portfolio));
     }
 
     @PutMapping
-    public ResponseEntity<PortfolioResumidoDto> update(@RequestBody PortfolioResumidoDto portfolio) throws ValidationsException, NotFoundException {
+    public ResponseEntity<PortfolioResumidoDto> update(@Valid @RequestBody PortfolioResumidoDto portfolio) throws ValidationsException, NotFoundException {
         portfolio = business.update(portfolio);
 
         return ResponseEntity.ok(portfolio);
     }
 
-    @PutMapping(value = "/id/{id}")
+    @PutMapping(value = "/{id}/produto/{produtoId}")
     @Operation(description = "Atualizar as inforamações de um item. O objeto produto não é alterado")
-    public ResponseEntity<PortfolioDto> update(@RequestBody ProdutoPortfolioDto produtoPortfolio, @PathVariable Integer id) {
-        return ResponseEntity.ok(business.update(id, produtoPortfolio));
+    public ResponseEntity<Void> update(@Valid @RequestBody ProdutoPortfolioDto produtoPortfolio, @PathVariable Integer id,
+                                       @PathVariable Integer produtoId) throws NotFoundException, ValidationsException {
+        business.update(id, produtoId, produtoPortfolio);
+
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/id/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) throws NotFoundException {
         business.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/id/{id}")
-    public ResponseEntity<PortfolioResumidoDto> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok(business.findPortfolioById(id));
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<PortfolioResumidoDto> findById(@PathVariable Integer id) throws NotFoundException {
+        return ResponseEntity.ok(business.findById(id));
     }
 }

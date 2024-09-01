@@ -4,7 +4,7 @@ import br.com.dducl.collective_coffee_marketplace.dto.ProdutoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.fornecedor.FornecedorRepository;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.produto.ProdutoRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.ProdutoConversor;
@@ -46,10 +46,14 @@ public class ProdutoBusiness {
         return conversor.converteEntidades(pagina);
     }
 
-    public ProdutoDto findProdutoById(int id) {
-        var produto = repository.getReferenceById(id);
+    public ProdutoDto findProdutoById(Integer id) throws NotFoundException {
+        Optional<Produto> optional = repository.findById(id);
 
-        return conversor.converte(produto);
+        if (optional.isEmpty()) {
+            throw new NotFoundException("Produto");
+        }
+
+        return conversor.converte(optional.get());
     }
 
     public ProdutoDto update(Integer id, ProdutoDto dto) throws ValidationsException {
@@ -88,11 +92,11 @@ public class ProdutoBusiness {
         return conversor.converte(desativar);
     }
 
-    public void insert(String documento, List<ProdutoDto> produtosDto) throws NotFoundException {
+    public void insert(String documento, List<ProdutoDto> produtosDto) throws ValidationsException {
         Optional<Fornecedor> optionalFornecedor = fornecedorRepository.findByPessoaDocumento(documento);
 
         if (optionalFornecedor.isEmpty()) {
-            throw new NotFoundException("PESSOA_DOCUMENTO_NAO_ENCONTRADO");
+            throw new ValidationsException("FORNECEDOR_NAO_ENCONTRADO");
         }
 
         List<Produto> produtos = conversor.converteDto(produtosDto);

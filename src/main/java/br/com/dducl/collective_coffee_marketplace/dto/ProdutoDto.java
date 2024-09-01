@@ -1,6 +1,5 @@
 package br.com.dducl.collective_coffee_marketplace.dto;
 
-import br.com.dducl.collective_coffee_marketplace.dto.fornecedor.FornecedorDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,7 +43,10 @@ public class ProdutoDto extends Dto {
     @Schema(description = "Data do cadastro", accessMode = Schema.AccessMode.READ_ONLY)
     private String dataCriacao;
 
-    @Schema(description = "Fornecedor do produto")
-    private FornecedorDto fornecedor;
+    @Schema(description = "Fornecedor do produto", example = "Café mior di bom")
+    private String fornecedorRazao;
+
+    @Schema(description = "Documento do fornecedor")
+    private String fornecedorDocumento;
 
 }

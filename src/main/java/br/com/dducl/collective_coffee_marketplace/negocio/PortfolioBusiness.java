@@ -1,16 +1,14 @@
 package br.com.dducl.collective_coffee_marketplace.negocio;
 
-import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioCadastroDto;
+import br.com.dducl.collective_coffee_marketplace.dto.ProdutoPortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioResumidoDto;
-import br.com.dducl.collective_coffee_marketplace.dto.portfolio_produto.ProdutoPortfolioDto;
-import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Fornecedor;
+import br.com.dducl.collective_coffee_marketplace.modelo.entidades.DetalhesProdutosPortifolio;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Portfolio;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
-import br.com.dducl.collective_coffee_marketplace.modelo.entidades.ProdutoPortfolio;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoRepository;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.fornecedor.FornecedorRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoPortfolioRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.portfolio.PortfolioRepository;
+import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.produto.ProdutoRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.PortfolioConversor;
@@ -25,13 +23,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,10 +41,10 @@ public class PortfolioBusiness {
     private PortfolioRepository repository;
 
     @Resource
-    private FornecedorRepository fornecedorRepository;
-
-    @Resource
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private ProdutoPortfolioRepository produtoPortfolioRepository;
 
     @Autowired
     private Clock clock;
@@ -83,95 +80,130 @@ public class PortfolioBusiness {
         }
     }
 
-    public PortfolioResumidoDto insert(PortfolioCadastroDto dto) throws ValidationsException, NotFoundException {
+    public PortfolioResumidoDto insert(PortfolioDto dto) throws ValidationsException, NotFoundException {
         Portfolio portfolio = conversor.converte(dto);
 
         portfolio.setDataCriacao(LocalDateTime.now(clock));
 
-        validaDataPortifolio(portfolio);
-
-        portfolio.setFornecedor(getFornecedor(portfolio.getFornecedor().getId()));
-
         portfolio.setProdutos(normalizeProdutosPortifolio(portfolio.getProdutos()));
 
+        validaDataPortifolio(portfolio);
 
-
-       /* Optional<Fornecedor> fornecedor = fornecedorRepository.findFornecedorByPessoaDocumento(dto.getFornecedor().getInformacoes().getIdentificador());
-
-        if (fornecedor.isEmpty()) {
-            throw new NotFoundException(dto.getId(), "Fornecedor");
+        if (!List.of(StatusPortfolio.ABERTO, StatusPortfolio.FECHADO).contains(portfolio.getStatus())) {
+            throw new ValidationsException("PORTIFOLIO_STATUS_CRIACAO_ERRADO");
         }
 
-        portfolio.setFornecedor(fornecedor.get());
+        portfolio = repository.save(portfolio);
 
-        Optional<Portfolio> portfolioCriado = repository.findPortfolioByFornecedorAndDescricao(portfolio.getFornecedor(), portfolio.getDescricao());
-
-        if (portfolioCriado.isPresent()) {
-            throw new ValidationsException("Portfólio já cadastrado para este fornecedor e mesma descrição, por favor verifique!");
-        }
-
-        portfolio.setDataCriacao(LocalDateTime.now());
-
-        portfolio.getProdutos().forEach(produto -> produto.setDataCriacao(LocalDateTime.now()));
-        Portfolio portfolioSalvo = repository.save(portfolio);
-
-        dto = conversor.converte(portfolioSalvo);
-        *//*dto.setFornecedor(fornecedorConversor.converte(portfolio.getFornecedor()));*//*
-
-         */
-        return dto;
-    }
-
-    private Set<ProdutoPortfolio> normalizeProdutosPortifolio(Set<ProdutoPortfolio> produtoPortfolios) {
-        Set<Integer> produtosId = produtoPortfolios.stream()
-                .map(produtoPortfolio -> produtoPortfolio.getProduto().getId())
-                .collect(Collectors.toSet());
-        List<Produto> produtos = produtoRepository.findAll(produtosId); // TODO IMPLEMENTAR METODO
-
-    }
-
-    private Fornecedor getFornecedor(Integer id) throws NotFoundException {
-        Optional<Fornecedor> optionalFornecedor = fornecedorRepository.findById(id);
-
-        if (optionalFornecedor.isEmpty()) {
-            throw new NotFoundException("NAO_ENCONTRADO", "Fornecedor");
-        }
-
-        return optionalFornecedor.get();
-    }
-
-    // TODO daqui para baixo a validação está em andamento
-    public PortfolioResumidoDto findPortfolioById(int id) {
-        var portfolio = (repository.getReferenceById(id));
         return conversor.converte(portfolio);
     }
 
-    public PortfolioResumidoDto update(PortfolioResumidoDto dto) throws NotFoundException {
-        Optional<Portfolio> portfolio = repository.findPortfolioById(dto.getId());
+    // TODO está com problema na criação do item
+    // TODO falta validar o restante dos restos do metodos
+    private Set<DetalhesProdutosPortifolio> normalizeProdutosPortifolio(Set<DetalhesProdutosPortifolio> produtoPortfolios) throws ValidationsException {
+        Set<Integer> produtosId = produtoPortfolios.stream()
+                .map(produtoPortfolio -> produtoPortfolio.getProduto().getId())
+                .collect(Collectors.toSet());
 
-        if (portfolio.isEmpty()) {
-            throw new NotFoundException(dto.getId(), "Portfolio");
+        Map<Integer, Produto> produtosMap = produtoRepository.findAllByIdIn(produtosId).stream()
+                .collect(Collectors.toMap(Produto::getId, produto -> produto));
+
+        if (produtosMap.isEmpty()) {
+            throw new ValidationsException("PORTIFOLIO_SEM_PRODUTO_CRIADO");
         }
 
-        Portfolio portfolioToUpdate = portfolio.get();
-        portfolioToUpdate.setStatus(dto.getStatus());
-        portfolioToUpdate.setDescricao(dto.getDescricao());
-        portfolioToUpdate.setDataVigencia(dto.getDataVigencia());
+        Set<DetalhesProdutosPortifolio> produtos = new HashSet<>(produtosMap.size());
 
-        return conversor.converte(repository.save(portfolioToUpdate));
+        produtoPortfolios.forEach(produtoPortfolio -> {
+            if (produtosMap.containsKey(produtoPortfolio.getProduto().getId())) {
+                produtoPortfolio.setProduto(produtosMap.get(produtoPortfolio.getId()));
+
+                if (BigDecimal.ZERO.equals(produtoPortfolio.getValor())) {
+                    produtoPortfolio.setValor(produtoPortfolio.getProduto().getValor());
+                }
+
+                produtos.add(produtoPortfolio);
+            }
+        });
+
+        return produtos;
+    }
+
+    public PortfolioResumidoDto findById(Integer id) throws NotFoundException {
+        Optional<Portfolio> portfolioOptional = repository.findById(id);
+
+        if (portfolioOptional.isEmpty()) {
+            throw new NotFoundException("Portfólio");
+        }
+
+        return conversor.converte(portfolioOptional.get());
+    }
+
+    public PortfolioResumidoDto update(PortfolioResumidoDto dto) throws NotFoundException, ValidationsException {
+        Portfolio newValues = conversor.converte(dto);
+        Optional<Portfolio> portfolio = repository.findById(dto.getId());
+
+        if (portfolio.isEmpty()) {
+            throw new NotFoundException("Portfólio");
+        }
+
+        Portfolio toUpdate = portfolio.get();
+
+        validaSePortfolioFinalizou(toUpdate);
+
+        validaDataPortifolio(newValues);
+
+        if (!List.of(StatusPortfolio.ABERTO, StatusPortfolio.FECHADO).contains(newValues.getStatus())) {
+            throw new ValidationsException("PORTIFOLIO_STATUS_ALTERAR_NAO_PERMITIDO");
+        }
+
+        toUpdate.setStatus(newValues.getStatus());
+        toUpdate.setDescricao(newValues.getDescricao());
+        toUpdate.setDataVigencia(newValues.getDataVigencia());
+
+        return conversor.converte(repository.save(toUpdate));
     }
 
     public void delete(Integer IdPortifolio) throws NotFoundException {
-        Optional<Portfolio> portfolioDeletar = repository.findPortfolioById(IdPortifolio);
+        Optional<Portfolio> optional = repository.findById(IdPortifolio);
 
-        if (portfolioDeletar.isEmpty()) {
-            throw new NotFoundException(IdPortifolio, "Portfolio");
+        if (optional.isEmpty()) {
+            throw new NotFoundException("Portfolio");
         }
 
-        repository.deleteById(IdPortifolio);
+        repository.delete(optional.get());
     }
 
-    public PortfolioDto update(Integer id, ProdutoPortfolioDto produtoPortfolio) {
-        return null;
+    public void update(Integer id, Integer produtoId, ProdutoPortfolioDto produtoPortfolio) throws NotFoundException, ValidationsException {
+        Optional<Portfolio> optional = repository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("Portfolio");
+        }
+
+        Portfolio portfolio = optional.get();
+
+        validaSePortfolioFinalizou(portfolio);
+
+        Optional<DetalhesProdutosPortifolio> optionaltoUpdate = optional.get().getProdutos().stream()
+                .filter(produto -> produto.getId().equals(produtoId))
+                .findAny();
+
+        if (optionaltoUpdate.isEmpty()) {
+            throw new NotFoundException("Item do portfólio");
+        }
+
+        DetalhesProdutosPortifolio toUpdate = optionaltoUpdate.get();
+        toUpdate.setValor(produtoPortfolio.getValor());
+        toUpdate.setDesconto(produtoPortfolio.getDesconto());
+        toUpdate.setTipoDesconto(produtoPortfolio.getTipoDesconto());
+
+        produtoPortfolioRepository.save(toUpdate);
+    }
+
+    private void validaSePortfolioFinalizou(Portfolio portfolio) throws ValidationsException {
+        if (portfolio.getDataVigencia().isAfter(LocalDateTime.now(clock)) && StatusPortfolio.FECHADO.equals(portfolio.getStatus())) {
+            throw new ValidationsException("PORTFOLIO_ENCERRADO_NAO_ALTERA");
+        }
     }
 }

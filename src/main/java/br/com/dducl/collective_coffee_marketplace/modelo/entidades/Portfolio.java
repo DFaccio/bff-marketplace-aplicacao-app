@@ -24,16 +24,12 @@ public class Portfolio implements Serializable {
     @Column
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "fornecedor_id")
-    private Fornecedor fornecedor;
-
     @Column
     private String descricao;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "portfolio_produtos", joinColumns = @JoinColumn(name = "portfolio_id"), inverseJoinColumns = @JoinColumn(name = "produto_portifolio_id"))
-    private Set<ProdutoPortfolio> produtos;
+    private Set<DetalhesProdutosPortifolio> produtos;
 
     @Column
     @Temporal(value = TemporalType.TIMESTAMP)

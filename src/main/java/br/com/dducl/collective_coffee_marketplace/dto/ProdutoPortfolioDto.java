@@ -1,7 +1,5 @@
-package br.com.dducl.collective_coffee_marketplace.dto.portfolio_produto;
+package br.com.dducl.collective_coffee_marketplace.dto;
 
-import br.com.dducl.collective_coffee_marketplace.dto.Dto;
-import br.com.dducl.collective_coffee_marketplace.dto.ProdutoDto;
 import br.com.dducl.collective_coffee_marketplace.util.enums.TipoDesconto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +17,9 @@ import java.math.BigDecimal;
 @Setter
 public class ProdutoPortfolioDto extends Dto {
 
+    @Schema(description = "Identificador do produto", example = "1")
     @NotNull
-    private ProdutoDto produto;
+    Integer produtoId;
 
     @Schema(description = "Novo valor a ser considerado para o portfólio. Quando não informado é considerado o valor do produto", example = "2.66")
     @PositiveOrZero

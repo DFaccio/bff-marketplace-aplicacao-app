@@ -39,21 +39,21 @@ public class ProdutoController {
 
     @GetMapping(value = "/id/{id}")
     @Operation(description = "Recuperar o produto por identificador")
-    public ResponseEntity<ProdutoDto> findProdutoById(@PathVariable int id) {
+    public ResponseEntity<ProdutoDto> findProdutoById(@PathVariable int id) throws NotFoundException {
         return ResponseEntity.ok(business.findProdutoById(id));
     }
 
     @PostMapping("/fornecedor/{documento}")
     @Operation(description = "Cadastrar produto por fornecedor")
     public ResponseEntity<Void> insert(@RequestBody @NotEmpty @Valid List<ProdutoDto> produtos,
-                                       @Parameter(description = "Documento do fornecedor") @PathVariable String documento) throws NotFoundException, ValidationsException {
+                                       @Parameter(description = "Documento do fornecedor") @PathVariable String documento) throws ValidationsException {
         business.insert(documento, produtos);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping(value = "/{id}")
-    @Operation(description = "Atualizar produto. O fornecedor não será atualizado")
+    @Operation(description = "Atualizar produto. Informações do fornecedor não serão atualizadas")
     public ResponseEntity<ProdutoDto> update(@RequestBody @Valid ProdutoDto produto,
                                              @PathVariable Integer id) throws ValidationsException {
         return ResponseEntity.ok(business.update(id, produto));

@@ -1,6 +1,6 @@
 package br.com.dducl.collective_coffee_marketplace.dto.portfolio;
 
-import br.com.dducl.collective_coffee_marketplace.dto.portfolio_produto.ProdutoPortfolioDto;
+import br.com.dducl.collective_coffee_marketplace.dto.ProdutoPortfolioDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

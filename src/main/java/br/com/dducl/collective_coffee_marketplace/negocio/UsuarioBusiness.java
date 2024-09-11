@@ -85,7 +85,7 @@ public class UsuarioBusiness {
         Optional<Usuario> optional = usuarioRepository.findByNomeEquals(username);
 
         if (optional.isEmpty()) {
-            throw new NotFoundException(username, "Usu\u00E1rio");
+            throw new NotFoundException("USUARIO_NAO_ENCONTRADO");
         }
 
         String senhaEncriptografada = PasswordUtils.encrypt(password);
@@ -118,7 +118,7 @@ public class UsuarioBusiness {
         Optional<Usuario> optional = usuarioRepository.findByNomeEquals(username);
 
         if (optional.isEmpty()) {
-            throw new NotFoundException(username, "Usu\u00E1rio");
+            throw new NotFoundException("USUARIO_NAO_ENCONTRADO");
         }
 
         return conversor.converte(optional.get());

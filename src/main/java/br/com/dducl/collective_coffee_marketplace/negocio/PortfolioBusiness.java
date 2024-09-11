@@ -96,24 +96,13 @@ public class PortfolioBusiness {
     }
 
     public PortfolioResumidoDto findById(Integer id) throws NotFoundException {
-        Optional<Portfolio> portfolioOptional = repository.findById(id);
-
-        if (portfolioOptional.isEmpty()) {
-            throw new NotFoundException("Portfólio");
-        }
-
-        return conversor.converte(portfolioOptional.get());
+        return conversor.converte(getPortfolio(id));
     }
 
     public PortfolioResumidoDto update(PortfolioResumidoDto dto) throws NotFoundException, ValidationsException {
         Portfolio newValues = conversor.converte(dto);
-        Optional<Portfolio> portfolio = repository.findById(dto.getId());
 
-        if (portfolio.isEmpty()) {
-            throw new NotFoundException("Portfólio");
-        }
-
-        Portfolio toUpdate = portfolio.get();
+        Portfolio toUpdate = getPortfolio(dto.getId());
 
         validaSePortfolioFinalizou(toUpdate);
 
@@ -131,23 +120,11 @@ public class PortfolioBusiness {
     }
 
     public void delete(Integer IdPortifolio) throws NotFoundException {
-        Optional<Portfolio> optional = repository.findById(IdPortifolio);
-
-        if (optional.isEmpty()) {
-            throw new NotFoundException("Portfolio");
-        }
-
-        repository.delete(optional.get());
+        repository.delete(getPortfolio(IdPortifolio));
     }
 
     public void update(Integer id, Integer produtoId, ProdutoPortfolioDto produtoPortfolio) throws NotFoundException, ValidationsException {
-        Optional<Portfolio> optional = repository.findById(id);
-
-        if (optional.isEmpty()) {
-            throw new NotFoundException("Portfolio");
-        }
-
-        Portfolio portfolio = optional.get();
+        Portfolio portfolio = getPortfolio(id);
 
         validaSePortfolioFinalizou(portfolio);
 
@@ -161,13 +138,7 @@ public class PortfolioBusiness {
     }
 
     public void insertProduto(Integer id, ProdutoPortfolioDto produtoPortfolio) throws NotFoundException, ValidationsException {
-        Optional<Portfolio> optional = repository.findById(id);
-
-        if (optional.isEmpty()) {
-            throw new NotFoundException("Portfolio");
-        }
-
-        Portfolio portfolio = optional.get();
+        Portfolio portfolio = getPortfolio(id);
 
         validaSePortfolioFinalizou(portfolio);
 
@@ -176,5 +147,15 @@ public class PortfolioBusiness {
         portfolio.getProdutos().add(novo);
 
         repository.save(portfolio);
+    }
+
+    private Portfolio getPortfolio(Integer id) throws NotFoundException {
+        Optional<Portfolio> optional = repository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("PORTFOLIO_NAO_ENCONTRADO");
+        }
+
+        return optional.get();
     }
 }

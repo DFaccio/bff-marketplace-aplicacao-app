@@ -79,7 +79,7 @@ public class GrupoCompraBusiness {
         Optional<GrupoCompra> optional = repository.findById(grupoCompraDto.getId());
 
         if (optional.isEmpty()) {
-            throw new NotFoundException("NAO_ENCONTRADO", "Grupo de Compra");
+            throw new NotFoundException("GRUPO_COMPRA_NAO_ENCONTRADO");
         }
 
         GrupoCompra toUpdate = optional.get();

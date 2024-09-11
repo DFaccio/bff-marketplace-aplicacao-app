@@ -50,7 +50,7 @@ public class ProdutoBusiness {
         Optional<Produto> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new NotFoundException("Produto");
+            throw new NotFoundException("PRODUTO_NAO_ENCONTRADO");
         }
 
         return conversor.converte(optional.get());

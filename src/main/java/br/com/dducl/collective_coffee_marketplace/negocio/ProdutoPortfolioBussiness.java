@@ -65,7 +65,7 @@ public class ProdutoPortfolioBussiness {
         Optional<DetalhesProdutosPortifolio> optionaltoUpdate = findAnyProdutoById(produtos, produtoId);
 
         if (optionaltoUpdate.isEmpty()) {
-            throw new NotFoundException("Item do portfólio");
+            throw new NotFoundException("PRODUTO_ADD_PORTFOLIO_NAO_ENCONTRADO");
         }
 
         DetalhesProdutosPortifolio toUpdate = optionaltoUpdate.get();
@@ -94,7 +94,7 @@ public class ProdutoPortfolioBussiness {
         Optional<Produto> optionalProduto = produtoRepository.findById(novo.getProduto().getId());
 
         if (optionalProduto.isEmpty()) {
-            throw new NotFoundException("Produto");
+            throw new NotFoundException("PRODUTO_ADD_PORTFOLIO_NAO_ENCONTRADO");
         }
 
         novo.setProduto(optionalProduto.get());

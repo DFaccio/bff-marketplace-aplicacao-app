@@ -5,17 +5,13 @@ import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioResumidoDto;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.DetalhesProdutosPortifolio;
 import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Portfolio;
-import br.com.dducl.collective_coffee_marketplace.modelo.entidades.Produto;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.ProdutoPortfolioRepository;
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.portfolio.PortfolioRepository;
-import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.produto.ProdutoRepository;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
 import br.com.dducl.collective_coffee_marketplace.util.conversores.PortfolioConversor;
 import br.com.dducl.collective_coffee_marketplace.util.enums.StatusPortfolio;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,31 +19,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PortfolioBusiness {
 
-    @Resource
-    private PortfolioConversor conversor;
+    private final PortfolioConversor conversor;
 
-    @Resource
-    private PortfolioRepository repository;
+    private final PortfolioRepository repository;
 
-    @Resource
-    private ProdutoRepository produtoRepository;
+    private final Clock clock;
 
-    @Autowired
-    private ProdutoPortfolioRepository produtoPortfolioRepository;
+    private final ProdutoPortfolioBussiness produtoPortfolioBussiness;
 
     @Autowired
-    private Clock clock;
+    public PortfolioBusiness(PortfolioConversor conversor, PortfolioRepository repository, Clock clock,
+                             ProdutoPortfolioBussiness produtoPortfolioBussiness) {
+        this.conversor = conversor;
+        this.repository = repository;
+        this.clock = clock;
+        this.produtoPortfolioBussiness = produtoPortfolioBussiness;
+    }
 
     public ResultadoPaginado<PortfolioDto> findAll(String documento, Integer idFornecedor, String dataEncerramento,
                                                    StatusPortfolio status, String produto, Pagination page) throws ValidationsException {
@@ -75,7 +72,7 @@ public class PortfolioBusiness {
             throw new ValidationsException("DATA_ENCERRAMENTO_PORTIFOLIO_MENOR_QUE_DATA_CRIACAO");
         }
 
-        if (portfolio.getDataCriacao().plusDays(30).isBefore(portfolio.getDataVigencia())) {
+        if (portfolio.getDataCriacao().plusDays(60).isBefore(portfolio.getDataVigencia())) {
             throw new ValidationsException("DATA_ENCERRAMENTO_MAIOR_SESSENTA_DIAS");
         }
     }
@@ -85,7 +82,7 @@ public class PortfolioBusiness {
 
         portfolio.setDataCriacao(LocalDateTime.now(clock));
 
-        portfolio.setProdutos(normalizeProdutosPortifolio(portfolio.getProdutos()));
+        portfolio.setProdutos(produtoPortfolioBussiness.normalizaAndValidaProdutos(portfolio.getProdutos()));
 
         validaDataPortifolio(portfolio);
 
@@ -96,37 +93,6 @@ public class PortfolioBusiness {
         portfolio = repository.save(portfolio);
 
         return conversor.converte(portfolio);
-    }
-
-    // TODO está com problema na criação do item
-    // TODO falta validar o restante dos restos do metodos
-    private Set<DetalhesProdutosPortifolio> normalizeProdutosPortifolio(Set<DetalhesProdutosPortifolio> produtoPortfolios) throws ValidationsException {
-        Set<Integer> produtosId = produtoPortfolios.stream()
-                .map(produtoPortfolio -> produtoPortfolio.getProduto().getId())
-                .collect(Collectors.toSet());
-
-        Map<Integer, Produto> produtosMap = produtoRepository.findAllByIdIn(produtosId).stream()
-                .collect(Collectors.toMap(Produto::getId, produto -> produto));
-
-        if (produtosMap.isEmpty()) {
-            throw new ValidationsException("PORTIFOLIO_SEM_PRODUTO_CRIADO");
-        }
-
-        Set<DetalhesProdutosPortifolio> produtos = new HashSet<>(produtosMap.size());
-
-        produtoPortfolios.forEach(produtoPortfolio -> {
-            if (produtosMap.containsKey(produtoPortfolio.getProduto().getId())) {
-                produtoPortfolio.setProduto(produtosMap.get(produtoPortfolio.getId()));
-
-                if (BigDecimal.ZERO.equals(produtoPortfolio.getValor())) {
-                    produtoPortfolio.setValor(produtoPortfolio.getProduto().getValor());
-                }
-
-                produtos.add(produtoPortfolio);
-            }
-        });
-
-        return produtos;
     }
 
     public PortfolioResumidoDto findById(Integer id) throws NotFoundException {
@@ -185,25 +151,30 @@ public class PortfolioBusiness {
 
         validaSePortfolioFinalizou(portfolio);
 
-        Optional<DetalhesProdutosPortifolio> optionaltoUpdate = optional.get().getProdutos().stream()
-                .filter(produto -> produto.getId().equals(produtoId))
-                .findAny();
-
-        if (optionaltoUpdate.isEmpty()) {
-            throw new NotFoundException("Item do portfólio");
-        }
-
-        DetalhesProdutosPortifolio toUpdate = optionaltoUpdate.get();
-        toUpdate.setValor(produtoPortfolio.getValor());
-        toUpdate.setDesconto(produtoPortfolio.getDesconto());
-        toUpdate.setTipoDesconto(produtoPortfolio.getTipoDesconto());
-
-        produtoPortfolioRepository.save(toUpdate);
+        produtoPortfolioBussiness.atualizaProduto(portfolio.getProdutos(), produtoId, produtoPortfolio);
     }
 
     private void validaSePortfolioFinalizou(Portfolio portfolio) throws ValidationsException {
         if (portfolio.getDataVigencia().isAfter(LocalDateTime.now(clock)) && StatusPortfolio.FECHADO.equals(portfolio.getStatus())) {
             throw new ValidationsException("PORTFOLIO_ENCERRADO_NAO_ALTERA");
         }
+    }
+
+    public void insertProduto(Integer id, ProdutoPortfolioDto produtoPortfolio) throws NotFoundException, ValidationsException {
+        Optional<Portfolio> optional = repository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new NotFoundException("Portfolio");
+        }
+
+        Portfolio portfolio = optional.get();
+
+        validaSePortfolioFinalizou(portfolio);
+
+        DetalhesProdutosPortifolio novo = produtoPortfolioBussiness.adicionaProduto(portfolio.getProdutos(), produtoPortfolio);
+
+        portfolio.getProdutos().add(novo);
+
+        repository.save(portfolio);
     }
 }

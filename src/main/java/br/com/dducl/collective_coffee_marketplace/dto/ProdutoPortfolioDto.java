@@ -34,6 +34,5 @@ public class ProdutoPortfolioDto extends Dto {
     private BigDecimal desconto;
 
     @Schema(description = "Formato que o desconto deve ser calculado", example = "PORCENTAGEM")
-    @NotNull
     private TipoDesconto tipoDesconto;
 }

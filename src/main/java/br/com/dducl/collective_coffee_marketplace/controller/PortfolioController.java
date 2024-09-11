@@ -1,8 +1,8 @@
 package br.com.dducl.collective_coffee_marketplace.controller;
 
+import br.com.dducl.collective_coffee_marketplace.dto.ProdutoPortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.dto.portfolio.PortfolioResumidoDto;
-import br.com.dducl.collective_coffee_marketplace.dto.ProdutoPortfolioDto;
 import br.com.dducl.collective_coffee_marketplace.negocio.PortfolioBusiness;
 import br.com.dducl.collective_coffee_marketplace.util.Pagination;
 import br.com.dducl.collective_coffee_marketplace.util.ResultadoPaginado;
@@ -61,6 +61,14 @@ public class PortfolioController {
     public ResponseEntity<Void> update(@Valid @RequestBody ProdutoPortfolioDto produtoPortfolio, @PathVariable Integer id,
                                        @PathVariable Integer produtoId) throws NotFoundException, ValidationsException {
         business.update(id, produtoId, produtoPortfolio);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/{id}")
+    @Operation(description = "Incluir produto ao portfólio")
+    public ResponseEntity<Void> insertProduto(@Valid @RequestBody ProdutoPortfolioDto produtoPortfolio, @PathVariable Integer id) throws NotFoundException, ValidationsException {
+        business.insertProduto(id, produtoPortfolio);
 
         return ResponseEntity.ok().build();
     }

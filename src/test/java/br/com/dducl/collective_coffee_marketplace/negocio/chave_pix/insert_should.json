@@ -1,0 +1,23 @@
+{
+  "nome": "Teste",
+  "documento": "123.895.659-89",
+  "email": "teste@gmail.com",
+  "telefone": "40028922",
+  "dataCadastro": "2020-12-03T10:45",
+  "ativo": true,
+  "chaves": [
+    {
+      "id": 1,
+      "chave": "ja-existe",
+      "ativo": false,
+      "dataCadastro": "2021-02-20T12:56"
+    },
+    {
+      "id": null,
+      "chave": "uma-nova-chave",
+      "ativo": true,
+      "dataCadastro": "2024-01-01T10:00"
+    }
+  ],
+  "perfil": "ADMINISTRADOR"
+}

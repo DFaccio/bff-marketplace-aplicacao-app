@@ -1,0 +1,10 @@
+[
+  {
+    "chave": "uma-nova-chave",
+    "ativo": true
+  },
+  {
+    "chave": "ja-existe",
+    "ativo": false
+  }
+]

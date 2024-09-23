@@ -87,9 +87,6 @@ class ChavePixBusinessTest extends TestUtils {
         when(repository.findByChaveAndDocumentoPessoa(any(String.class), any(String.class)))
                 .thenReturn(Optional.of(new ChavesPix()));
 
-        when(repository.findByChaveAndDocumentoPessoa(any(String.class), any(String.class)))
-                .thenReturn(Optional.of(new ChavesPix()));
-
         ValidationsException exception = assertThrows(ValidationsException.class, () ->
                 business.update("333.999.888-89", "chave", new ChavesPixDto("chave-nova", true)));
 
@@ -112,11 +109,7 @@ class ChavePixBusinessTest extends TestUtils {
         when(pessoaRepository.save(any(Pessoa.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(Instant.now(clock))
-                .thenReturn(Instant.parse("2024-01-01T10:00:00Z"));
-
-        when(clock.getZone())
-                .thenReturn(ZoneId.of("America/Sao_Paulo"));
+        fixClock();
 
         business.insert("123.895.659-89", chaves);
 
@@ -126,4 +119,11 @@ class ChavePixBusinessTest extends TestUtils {
         );
     }
 
+    private void fixClock() {
+        when(Instant.now(clock))
+                .thenReturn(Instant.parse("2024-01-01T10:00:00Z"));
+
+        when(clock.getZone())
+                .thenReturn(ZoneId.of("America/Sao_Paulo"));
+    }
 }

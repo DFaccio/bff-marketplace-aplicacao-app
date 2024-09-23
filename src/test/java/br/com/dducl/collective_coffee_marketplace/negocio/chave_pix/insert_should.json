@@ -10,13 +10,13 @@
       "id": 1,
       "chave": "ja-existe",
       "ativo": false,
-      "dataCadastro": "2021-02-20T12:56"
+      "dataCadastro": "2021-02-20"
     },
     {
       "id": null,
       "chave": "uma-nova-chave",
       "ativo": true,
-      "dataCadastro": "2024-01-01T10:00"
+      "dataCadastro": "2024-01-01"
     }
   ],
   "perfil": "ADMINISTRADOR"

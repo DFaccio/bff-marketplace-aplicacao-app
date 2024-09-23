@@ -8,6 +8,7 @@ import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.produto.Pr
 import br.com.dducl.collective_coffee_marketplace.util.conversores.ProdutoPortfolioConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -26,7 +27,9 @@ public class ProdutoPortfolioBussiness {
 
     private final ProdutoPortfolioConversor conversor;
 
-    public ProdutoPortfolioBussiness(ProdutoRepository produtoRepository, ProdutoPortfolioRepository produtoPortfolioRepository, ProdutoPortfolioConversor conversor) {
+    @Autowired
+    public ProdutoPortfolioBussiness(ProdutoRepository produtoRepository, ProdutoPortfolioRepository produtoPortfolioRepository,
+                                     ProdutoPortfolioConversor conversor) {
         this.produtoRepository = produtoRepository;
         this.produtoPortfolioRepository = produtoPortfolioRepository;
         this.conversor = conversor;

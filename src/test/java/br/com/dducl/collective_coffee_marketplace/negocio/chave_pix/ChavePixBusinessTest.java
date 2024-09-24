@@ -8,6 +8,7 @@ import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.chavespix.
 import br.com.dducl.collective_coffee_marketplace.modelo.persistencia.pessoa.PessoaRepository;
 import br.com.dducl.collective_coffee_marketplace.negocio.ChavePixBusiness;
 import br.com.dducl.collective_coffee_marketplace.util.MessageUtil;
+import br.com.dducl.collective_coffee_marketplace.util.conversores.ChavePixConversor;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.NotFoundException;
 import br.com.dducl.collective_coffee_marketplace.util.exceptions.ValidationsException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 class ChavePixBusinessTest extends TestUtils {
@@ -42,6 +46,9 @@ class ChavePixBusinessTest extends TestUtils {
 
     @Mock
     private Clock clock;
+
+    @Mock
+    private ChavePixConversor conversor;
 
     @InjectMocks
     private ChavePixBusiness business;
@@ -125,5 +132,33 @@ class ChavePixBusinessTest extends TestUtils {
 
         when(clock.getZone())
                 .thenReturn(ZoneId.of("America/Sao_Paulo"));
+    }
+
+    @Test
+    @DisplayName(value = "Teste update - sucesso")
+    void testUpdate() throws IOException, NotFoundException, ValidationsException, JSONException {
+        Pessoa pessoa = getMockAsClass(PATH + "pessoa.json", Pessoa.class);
+
+        ChavesPix chave = pessoa.getChaves().get(0);
+
+        doReturn(Optional.of(chave))
+                .doReturn(Optional.empty())
+                .when(repository)
+                .findByChaveAndDocumentoPessoa(anyString(), anyString());
+
+        when(repository.save(any(ChavesPix.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        fixClock();
+
+        ChavesPix expectedSaved = new ChavesPix(1, "novo-valor", chave.isAtivo(), LocalDate.now(clock));
+
+        business.update(pessoa.getDocumento(), chave.getChave(),
+                new ChavesPixDto("novo-valor", chave.isAtivo()));
+
+        super.assertJsonEquals(
+                super.objectMapper.writeValueAsString(expectedSaved),
+                super.objectMapper.writeValueAsString(chave)
+        );
     }
 }
